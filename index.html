@@ -16,8 +16,9 @@ footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 .screen{display:none}
 .screen.active{display:block}
 
-.card{background:#fff;border-radius:8px;padding:2rem;margin-bottom:2rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
-.btn{padding:.8rem 1.2rem;font-size:1rem;cursor:pointer;border:none;border-radius:6px;background:#2c5f8d;color:#fff}
+.card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+
+.btn{padding:.8rem 1.2rem;border:none;border-radius:6px;background:#2c5f8d;color:#fff;cursor:pointer}
 
 .tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
 .tab-btn{flex:1;padding:.6rem;border:none;border-radius:6px;cursor:pointer;background:#dee2e6}
@@ -26,11 +27,11 @@ footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 .tab-panel{display:none}
 .tab-panel.active{display:block}
 
-.scale-option{display:inline-block;padding:.7rem;margin:.3rem;border:1px solid #ccc;border-radius:6px;cursor:pointer;width:42px;text-align:center}
+.question{margin-bottom:1rem}
+.scale-option{display:inline-block;padding:.6rem;margin:.2rem;border:1px solid #ccc;border-radius:6px;cursor:pointer;width:42px;text-align:center}
 .scale-option.selected{background:#2c5f8d;color:#fff;border-color:#2c5f8d}
 
 .feedback{margin-top:1.5rem;padding:1rem;background:#f1f3f5;border-radius:6px}
-.feedback h4{margin-top:1rem}
 </style>
 </head>
 
@@ -42,186 +43,128 @@ footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 
 <main>
 
-<!-- SCREEN 1 -->
+<!-- BIENVENIDA -->
 <section id="screen-welcome" class="screen active">
   <div class="card">
     <h2>Bienvenida</h2>
-    <p>Esta autoevaluación te invita a reflexionar sobre cómo piensas, decides y enfrentas situaciones inciertas.</p>
-    <button class="btn" onclick="showScreen('screen-eval')">Comenzar</button>
+    <p>Reflexiona sobre tu forma de pensar y decidir.</p>
+    <button class="btn" onclick="showScreen('screen-eval');openTab('cog')">Comenzar</button>
   </div>
 </section>
 
-<!-- SCREEN 2 -->
+<!-- EVALUACIÓN -->
 <section id="screen-eval" class="screen">
   <div class="card">
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="cog">Estilo Cognoscitivo</button>
-      <button class="tab-btn" data-tab="locus">Locus de Control</button>
-      <button class="tab-btn" data-tab="amb">Tolerancia a la Ambigüedad</button>
+      <button class="tab-btn active" data-tab="cog" onclick="openTab('cog')">Estilo Cognoscitivo</button>
+      <button class="tab-btn" data-tab="locus" onclick="openTab('locus')">Locus de Control</button>
+      <button class="tab-btn" data-tab="amb" onclick="openTab('amb')">Tolerancia a la Ambigüedad</button>
     </div>
 
-    <!-- COG -->
-    <div class="tab-panel active" id="tab-cog"></div>
-
-    <!-- LOCUS -->
-    <div class="tab-panel" id="tab-locus"></div>
-
-    <!-- AMB -->
-    <div class="tab-panel" id="tab-amb"></div>
+    <div id="tab-cog" class="tab-panel active"></div>
+    <div id="tab-locus" class="tab-panel"></div>
+    <div id="tab-amb" class="tab-panel"></div>
 
   </div>
 </section>
 
 </main>
 
-<footer>
-App educativa · v3.0 · Febrero 2026
-</footer>
+<footer>v3.1</footer>
 
 <script>
-// ================= DATOS =================
-const cognoscitivo = {
-  questions: [
-    {t:"Valoro la exactitud y los datos antes de decidir.", k:"K"},
-    {t:"Prefiero trabajar con planes bien definidos.", k:"P"},
-    {t:"Me gusta cuestionar lo establecido.", k:"C"}
-  ],
-  answers:[]
-};
+// ---------- DATOS ----------
+const cogQ=[
+  {t:"Valoro la exactitud y los datos antes de decidir.",k:"K"},
+  {t:"Prefiero trabajar con planes bien definidos.",k:"P"},
+  {t:"Me gusta cuestionar lo establecido.",k:"C"}
+];
+const locusQ=[
+  "Mis logros dependen de mi esfuerzo.",
+  "El éxito depende de la suerte.",
+  "Puedo influir en lo que ocurre."
+];
+const ambQ=[
+  "Me siento cómodo con la incertidumbre.",
+  "Prefiero instrucciones claras.",
+  "Puedo decidir con información incompleta."
+];
 
-const locus = {
-  questions: [
-    "Mis logros dependen principalmente de mi esfuerzo.",
-    "El éxito depende de la suerte.",
-    "Cuando algo sale mal, puedo hacer algo para cambiarlo."
-  ],
-  answers:[]
-};
+const answers={cog:[],locus:[],amb:[]};
 
-const amb = {
-  questions: [
-    "Me siento cómodo cuando no tengo toda la información.",
-    "Prefiero instrucciones claras antes de empezar.",
-    "Puedo decidir aunque no tenga todas las respuestas."
-  ],
-  answers:[]
-};
-
-// ================= SCREENS =================
+// ---------- SCREENS ----------
 function showScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-// ================= TABS =================
-const tabBtns=document.querySelectorAll(".tab-btn");
-const panels=document.querySelectorAll(".tab-panel");
+// ---------- TABS ----------
+function openTab(tab){
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.getElementById("tab-"+tab).classList.add("active");
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
 
-tabBtns.forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    tabBtns.forEach(b=>b.classList.remove("active"));
-    panels.forEach(p=>p.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
-  });
-});
+  if(tab==="cog") renderCog();
+  if(tab==="locus") renderLocus();
+  if(tab==="amb") renderAmb();
+}
 
-// ================= RENDER =================
-renderCognoscitivo();
-renderLocus();
-renderAmb();
-
-// -------- COG --------
-function renderCognoscitivo(){
+// ---------- RENDER ----------
+function renderCog(){
   const el=document.getElementById("tab-cog");
   el.innerHTML="<h3>Estilo Cognoscitivo</h3>";
-
-  cognoscitivo.questions.forEach((q,i)=>{
-    el.innerHTML+=`<p>${q.t}</p>`;
+  cogQ.forEach((q,i)=>{
+    el.innerHTML+=`<div class="question"><p>${q.t}</p>`;
     for(let s=1;s<=5;s++){
-      el.innerHTML+=`<span class="scale-option" onclick="selectCog(${i},${s},this)">${s}</span>`;
+      el.innerHTML+=`<span class="scale-option" onclick="select('cog',${i},${s},this)">${s}</span>`;
     }
+    el.innerHTML+="</div>";
   });
-
-  el.innerHTML+=`<br><button class="btn" onclick="finishCog()">Finalizar sección</button>
-                 <div class="feedback" id="fb-cog"></div>`;
+  el.innerHTML+=`<button class="btn" onclick="finishCog()">Finalizar</button><div class="feedback" id="fb-cog"></div>`;
 }
 
-function selectCog(i,v,el){
-  cognoscitivo.answers[i]=v;
-  el.parentNode.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
-  el.classList.add("selected");
-}
-
-function finishCog(){
-  const sums={K:0,P:0,C:0},counts={K:0,P:0,C:0};
-  cognoscitivo.questions.forEach((q,i)=>{
-    sums[q.k]+=cognoscitivo.answers[i];
-    counts[q.k]++;
-  });
-  const fb=document.getElementById("fb-cog");
-  fb.innerHTML="";
-  Object.keys(sums).forEach(k=>{
-    const avg=(sums[k]/counts[k]).toFixed(2);
-    fb.innerHTML+=`<h4>${k} (${avg})</h4>
-    <p>Esta dimensión refleja un énfasis particular en tu forma de pensar.</p>`;
-  });
-}
-
-// -------- LOCUS --------
 function renderLocus(){
   const el=document.getElementById("tab-locus");
   el.innerHTML="<h3>Locus de Control</h3>";
-  locus.questions.forEach((q,i)=>{
-    el.innerHTML+=`<p>${q}</p>
-    <span class="scale-option" onclick="selectLocus(${i},0,this)">0</span>
-    <span class="scale-option" onclick="selectLocus(${i},1,this)">1</span>`;
+  locusQ.forEach((q,i)=>{
+    el.innerHTML+=`<div class="question"><p>${q}</p>
+    <span class="scale-option" onclick="select('locus',${i},0,this)">0</span>
+    <span class="scale-option" onclick="select('locus',${i},1,this)">1</span></div>`;
   });
-  el.innerHTML+=`<br><button class="btn" onclick="finishLocus()">Finalizar sección</button>
-                 <div class="feedback" id="fb-locus"></div>`;
+  el.innerHTML+=`<button class="btn" onclick="finishLocus()">Finalizar</button><div class="feedback" id="fb-locus"></div>`;
 }
 
-function selectLocus(i,v,el){
-  locus.answers[i]=v;
-  el.parentNode.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
-  el.classList.add("selected");
-}
-
-function finishLocus(){
-  const total=locus.answers.reduce((a,b)=>a+b,0);
-  const fb=document.getElementById("fb-locus");
-  fb.innerHTML=`<p>Puntaje total: <strong>${total}</strong></p>
-  <p>Este resultado sugiere cómo percibes la influencia de tus acciones y del entorno.</p>`;
-}
-
-// -------- AMB --------
 function renderAmb(){
   const el=document.getElementById("tab-amb");
   el.innerHTML="<h3>Tolerancia a la Ambigüedad</h3>";
-  amb.questions.forEach((q,i)=>{
-    el.innerHTML+=`<p>${q}</p>`;
+  ambQ.forEach((q,i)=>{
+    el.innerHTML+=`<div class="question"><p>${q}</p>`;
     for(let s=1;s<=7;s++){
-      el.innerHTML+=`<span class="scale-option" onclick="selectAmb(${i},${s},this)">${s}</span>`;
+      el.innerHTML+=`<span class="scale-option" onclick="select('amb',${i},${s},this)">${s}</span>`;
     }
+    el.innerHTML+="</div>";
   });
-  el.innerHTML+=`<br><button class="btn" onclick="finishAmb()">Finalizar sección</button>
-                 <div class="feedback" id="fb-amb"></div>`;
+  el.innerHTML+=`<button class="btn" onclick="finishAmb()">Finalizar</button><div class="feedback" id="fb-amb"></div>`;
 }
 
-function selectAmb(i,v,el){
-  amb.answers[i]=v;
+// ---------- SELECT ----------
+function select(type,i,v,el){
+  answers[type][i]=v;
   el.parentNode.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
   el.classList.add("selected");
 }
 
-function finishAmb(){
-  const total=amb.answers.reduce((a,b)=>a+b,0);
-  const fb=document.getElementById("fb-amb");
-  fb.innerHTML=`<p>Puntaje total: <strong>${total}</strong></p>
-  <p>Este resultado refleja tu comodidad ante situaciones inciertas.</p>`;
+// ---------- FEEDBACK ----------
+function finishCog(){
+  if(answers.cog.length<3) return alert("Responde todas las preguntas");
+  document.getElementById("fb-cog").innerHTML="<p>Se ha identificado tu perfil cognoscitivo.</p>";
 }
-</script>
-
-</body>
-</html>
+function finishLocus(){
+  if(answers.locus.length<3) return alert("Responde todas las preguntas");
+  document.getElementById("fb-locus").innerHTML="<p>Se ha identificado tu orientación de control.</p>";
+}
+function finishAmb(){
+  if(answers.amb.length<3) return alert("Responde todas las preguntas");
+  doc
