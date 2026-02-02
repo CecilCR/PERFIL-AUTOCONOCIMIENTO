@@ -1,104 +1,40 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Perfil / Autoconocimiento</title>
-
-<style>
-body{margin:0;font-family:Arial,sans-serif;background:#f4f6f8}
-header{background:#2c5f8d;color:#fff;padding:1.5rem;text-align:center}
-main{max-width:900px;margin:auto;padding:1.5rem}
-.card{background:#fff;padding:2rem;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,.1)}
-
-.screen{display:none}
-.screen.active{display:block}
-
-.tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
-.tab-btn{flex:1;padding:.6rem;border:none;border-radius:6px;background:#dee2e6;cursor:pointer}
-.tab-btn.active{background:#2c5f8d;color:#fff}
-
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-
-.question{margin-bottom:1rem}
-.option{
-  display:inline-block;
-  margin:.25rem;
-  padding:.5rem;
-  border:1px solid #ccc;
-  border-radius:6px;
-  width:40px;
-  text-align:center;
-  cursor:pointer;
-}
-.option.selected{background:#2c5f8d;color:#fff;border-color:#2c5f8d}
-
-button{margin-top:1rem;padding:.8rem 1.2rem;border:none;border-radius:6px;background:#2c5f8d;color:#fff;cursor:pointer}
-.feedback{margin-top:1.5rem;padding:1rem;background:#eef2f5;border-radius:6px}
-</style>
-</head>
-
-<body>
-
-<header>
-<h1>Perfil / Autoconocimiento</h1>
-</header>
-
-<main>
-
-<!-- BIENVENIDA -->
-<section id="screen-welcome" class="screen active">
-  <div class="card">
-    <h2>Bienvenido al Ejercicio de Autoconocimiento</h2>
-    <p>Instrumento basado en Whetten & Cameron.</p>
-    <button onclick="startEvaluation()">Comenzar</button>
-  </div>
-</section>
-
-<!-- EVALUACIÓN -->
-<section id="screen-eval" class="screen">
-  <div class="card">
-
-    <div class="tabs">
-      <button class="tab-btn active" onclick="openTab('cog')">Estilo Cognoscitivo</button>
-      <button class="tab-btn" onclick="openTab('locus')">Locus de Control</button>
-      <button class="tab-btn" onclick="openTab('amb')">Tolerancia a la Ambigüedad</button>
-    </div>
-
-    <div id="tab-cog" class="tab-panel active"></div>
-    <div id="tab-locus" class="tab-panel"></div>
-    <div id="tab-amb" class="tab-panel"></div>
-
-  </div>
-</section>
-
-</main>
-
 <script>
-// ========= DATOS =========
+/* =========================
+   DATOS
+========================= */
 const DATA = {
-  cog:{ scale:[1,2,3,4,5], questions:[
-    "Valoro la exactitud y los datos antes de decidir.",
-    "Prefiero trabajar con planes bien definidos.",
-    "Me gusta cuestionar lo establecido."
-  ]},
-  locus:{ scale:[0,1], questions:[
-    "Mis logros dependen de mi esfuerzo.",
-    "El éxito depende de la suerte.",
-    "Puedo influir en lo que ocurre."
-  ]},
-  amb:{ scale:[1,2,3,4,5,6,7], questions:[
-    "Me siento cómodo con la incertidumbre.",
-    "Prefiero instrucciones claras.",
-    "Puedo decidir con información incompleta."
-  ]}
+  cog:{
+    scale:[1,2,3,4,5],
+    questions:[
+      "Valoro la exactitud y los datos antes de decidir.",
+      "Prefiero trabajar con planes bien definidos.",
+      "Me gusta cuestionar lo establecido."
+    ]
+  },
+  locus:{
+    scale:[0,1],
+    questions:[
+      "Mis logros dependen de mi esfuerzo.",
+      "El éxito depende de la suerte.",
+      "Puedo influir en lo que ocurre."
+    ]
+  },
+  amb:{
+    scale:[1,2,3,4,5,6,7],
+    questions:[
+      "Me siento cómodo con la incertidumbre.",
+      "Prefiero instrucciones claras.",
+      "Puedo decidir con información incompleta."
+    ]
+  }
 };
 
 const answers = { cog:[], locus:[], amb:[] };
 const rendered = { cog:false, locus:false, amb:false };
 
-// ========= NAVEGACIÓN =========
+/* =========================
+   NAVEGACIÓN
+========================= */
 function startEvaluation(){
   document.getElementById("screen-welcome").classList.remove("active");
   document.getElementById("screen-eval").classList.add("active");
@@ -108,51 +44,72 @@ function startEvaluation(){
 function openTab(tab){
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+
   document.getElementById("tab-"+tab).classList.add("active");
-  document.querySelectorAll(".tab-btn")[["cog","locus","amb"].indexOf(tab)].classList.add("active");
+  document.querySelector(`button[onclick="openTab('${tab}')"]`).classList.add("active");
 
-  if(!rendered[tab]) renderSection(tab);
+  if(!rendered[tab]){
+    renderSection(tab);
+    rendered[tab] = true;
+  }
 }
 
-// ========= RENDER =========
+/* =========================
+   RENDER CORRECTO
+========================= */
 function renderSection(type){
-  const panel=document.getElementById("tab-"+type);
-  panel.innerHTML="";
-  DATA[type].questions.forEach((q,i)=>{
-    const div=document.createElement("div");
-    div.className="question";
-    div.innerHTML=`<p>${q}</p>`;
-    DATA[type].scale.forEach(v=>{
-      const opt=document.createElement("span");
-      opt.className="option";
-      opt.textContent=v;
-      opt.onclick=()=>selectOption(type,i,v,opt);
-      div.appendChild(opt);
+  const panel = document.getElementById("tab-"+type);
+  panel.innerHTML = "";
+
+  DATA[type].questions.forEach((text, index)=>{
+    const qDiv = document.createElement("div");
+    qDiv.className = "question";
+
+    const p = document.createElement("p");
+    p.textContent = text;
+    qDiv.appendChild(p);
+
+    const optionsDiv = document.createElement("div");
+
+    DATA[type].scale.forEach(value=>{
+      const opt = document.createElement("span");
+      opt.className = "option";
+      opt.textContent = value;
+
+      opt.addEventListener("click", ()=>{
+        answers[type][index] = value;
+        optionsDiv.querySelectorAll(".option")
+          .forEach(o=>o.classList.remove("selected"));
+        opt.classList.add("selected");
+      });
+
+      optionsDiv.appendChild(opt);
     });
-    panel.appendChild(div);
+
+    qDiv.appendChild(optionsDiv);
+    panel.appendChild(qDiv);
   });
-  panel.innerHTML+=`<button onclick="finishSection('${type}')">Finalizar sección</button>
-                   <div class="feedback" id="fb-${type}"></div>`;
-  rendered[type]=true;
+
+  const btn = document.createElement("button");
+  btn.textContent = "Finalizar sección";
+  btn.onclick = ()=>finishSection(type);
+  panel.appendChild(btn);
+
+  const fb = document.createElement("div");
+  fb.className = "feedback";
+  fb.id = "fb-" + type;
+  panel.appendChild(fb);
 }
 
-// ========= SELECCIÓN =========
-function selectOption(type,i,v,opt){
-  answers[type][i]=v;
-  opt.parentNode.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
-  opt.classList.add("selected");
-}
-
-// ========= FEEDBACK BASE =========
+/* =========================
+   FINALIZAR
+========================= */
 function finishSection(type){
   if(answers[type].length < DATA[type].questions.length){
-    alert("Responde todas las preguntas");
+    alert("Responde todas las preguntas antes de continuar.");
     return;
   }
   document.getElementById("fb-"+type).innerHTML =
-    "<strong>Sección completada.</strong> Retroalimentación disponible.";
+    "<strong>Sección completada correctamente.</strong>";
 }
 </script>
-
-</body>
-</html>
