@@ -1,1 +1,120 @@
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+/* =========================
+   DATOS
+========================= */
+const DATA = {
+  cog:{
+    scale:[1,2,3,4,5],
+    questions:[
+      "Valoro la exactitud y los datos antes de decidir.",
+      "Prefiero trabajar con planes bien definidos.",
+      "Me gusta cuestionar lo establecido."
+    ]
+  },
+  locus:{
+    scale:[0,1],
+    questions:[
+      "Mis logros dependen de mi esfuerzo.",
+      "El éxito depende de la suerte.",
+      "Puedo influir en lo que ocurre."
+    ]
+  },
+  amb:{
+    scale:[1,2,3,4,5,6,7],
+    questions:[
+      "Me siento cómodo con la incertidumbre.",
+      "Prefiero instrucciones claras.",
+      "Puedo decidir con información incompleta."
+    ]
+  }
+};
+
+const answers = { cog:[], locus:[], amb:[] };
+const rendered = { cog:false, locus:false, amb:false };
+
+/* =========================
+   NAVEGACIÓN
+========================= */
+window.startEvaluation = function(){
+  document.getElementById("screen-welcome").classList.remove("active");
+  document.getElementById("screen-eval").classList.add("active");
+  openTab("cog");
+};
+
+window.openTab = function(tab){
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+
+  document.getElementById("tab-"+tab).classList.add("active");
+  document.querySelector(`button[data-tab="${tab}"]`)?.classList.add("active");
+
+  if(!rendered[tab]){
+    renderSection(tab);
+    rendered[tab] = true;
+  }
+};
+
+/* =========================
+   RENDER
+========================= */
+function renderSection(type){
+  const panel = document.getElementById("tab-"+type);
+  panel.innerHTML = "";
+
+  DATA[type].questions.forEach((text, index)=>{
+    const qDiv = document.createElement("div");
+    qDiv.className = "question";
+
+    const p = document.createElement("p");
+    p.textContent = text;
+    qDiv.appendChild(p);
+
+    const optionsDiv = document.createElement("div");
+
+    DATA[type].scale.forEach(value=>{
+      const opt = document.createElement("span");
+      opt.className = "option";
+      opt.textContent = value;
+
+      opt.addEventListener("click", ()=>{
+        answers[type][index] = value;
+        optionsDiv.querySelectorAll(".option")
+          .forEach(o=>o.classList.remove("selected"));
+        opt.classList.add("selected");
+      });
+
+      optionsDiv.appendChild(opt);
+    });
+
+    qDiv.appendChild(optionsDiv);
+    panel.appendChild(qDiv);
+  });
+
+  const btn = document.createElement("button");
+  btn.textContent = "Finalizar sección";
+  btn.onclick = ()=>finishSection(type);
+  panel.appendChild(btn);
+
+  const fb = document.createElement("div");
+  fb.className = "feedback";
+  fb.id = "fb-" + type;
+  panel.appendChild(fb);
+}
+
+/* =========================
+   FINALIZAR
+========================= */
+function finishSection(type){
+  if(answers[type].length < DATA[type].questions.length){
+    alert("Responde todas las preguntas antes de continuar.");
+    return;
+  }
+  document.getElementById("fb-"+type).innerHTML =
+    "<strong>Sección completada correctamente.</strong>";
+}
+
+}); // 👈 CIERRE CORRECTO
+</script>
 
