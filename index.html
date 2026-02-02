@@ -36,115 +36,124 @@ footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 <!-- PANTALLA 1 -->
 <div class="card" id="screen-welcome">
 <h2>Bienvenida</h2>
-<p>Esta autoevaluación te invita a reflexionar sobre la forma en que piensas, tomas decisiones y enfrentas situaciones inciertas.</p>
+<p>Esta autoevaluación te invita a reflexionar sobre cómo piensas, decides y enfrentas la incertidumbre.</p>
 <p>No hay respuestas correctas o incorrectas. Los resultados son solo para tu reflexión personal.</p>
 <button class="btn" onclick="startApp()">Comenzar autoevaluación</button>
 </div>
 
 <!-- PANTALLA 2 -->
 <div class="card" id="screen-eval" style="display:none">
+
 <div class="tabs">
-<button class="tab-btn active" onclick="openTab('cog')">Estilo Cognoscitivo</button>
-<button class="tab-btn" onclick="openTab('locus')">Locus de Control</button>
-<button class="tab-btn" onclick="openTab('amb')">Tolerancia a la Ambigüedad</button>
+  <button class="tab-btn active" data-tab="cog" onclick="openTab('cog')">Estilo Cognoscitivo</button>
+  <button class="tab-btn" data-tab="locus" onclick="openTab('locus')">Locus de Control</button>
+  <button class="tab-btn" data-tab="amb" onclick="openTab('amb')">Tolerancia a la Ambigüedad</button>
 </div>
 
 <div id="tab-cog" class="tab"></div>
 <div id="tab-locus" class="tab"></div>
 <div id="tab-amb" class="tab"></div>
+
 </div>
 
 <!-- PANTALLA 3 -->
 <div class="card" id="screen-end" style="display:none">
 <h2>Autoevaluación finalizada</h2>
-<p>Gracias por completar el ejercicio. Te invitamos a reflexionar sobre tus resultados y considerar cómo estas dimensiones influyen en tu forma de aprender y actuar.</p>
+<p>Gracias por completar el ejercicio. Reflexiona sobre cómo estos resultados influyen en tu forma de aprender y actuar.</p>
 </div>
 
 </main>
 
 <footer>
-App educativa · v2.0 · Febrero 2026
+App educativa · v2.1 · Febrero 2026
 </footer>
 
 <script>
 // ================== DATOS ==================
 const data = {
   cog: {
-    scale:5,
-    questions:[
+    scale: 5,
+    questions: [
       ["Valoro la exactitud y los datos antes de decidir.","K"],
       ["Prefiero trabajar con planes bien definidos.","P"],
       ["Me gusta cuestionar lo establecido.","C"]
     ],
-    answers:[],
-    feedback:{
-      K:{t:"Estilo de Conocimiento",d:"Énfasis en lógica y datos.",v:"Decisiones basadas en evidencias.",r:"Evita la parálisis por análisis."},
-      P:{t:"Estilo de Planeación",d:"Énfasis en estructura y método.",v:"Orden y previsibilidad.",r:"Practica flexibilidad planificada."},
-      C:{t:"Estilo Creativo",d:"Énfasis en innovación.",v:"Generación de ideas.",r:"Refuerza la ejecución."}
-    }
+    answers: []
   },
-  locus:{
-    scale:1,
-    questions:[
-      "Mis logros dependen de mi esfuerzo.",
+  locus: {
+    scale: 1,
+    questions: [
+      "Mis logros dependen principalmente de mi esfuerzo.",
       "El éxito depende de la suerte.",
-      "Puedo influir en lo que ocurre."
+      "Cuando algo sale mal, puedo hacer algo para cambiarlo."
     ],
-    answers:[]
+    answers: []
   },
-  amb:{
-    scale:7,
-    questions:[
-      "Me siento cómodo con la incertidumbre.",
-      "Prefiero instrucciones claras.",
-      "Puedo decidir con información incompleta."
+  amb: {
+    scale: 7,
+    questions: [
+      "Me siento cómodo cuando no tengo toda la información.",
+      "Prefiero instrucciones claras antes de empezar.",
+      "Puedo decidir aunque no tenga todas las respuestas."
     ],
-    answers:[]
+    answers: []
   }
 };
 
 // ================== NAVEGACIÓN ==================
 function startApp(){
-screen-welcome.style.display="none";
-screen-eval.style.display="block";
-openTab('cog');
+  document.getElementById("screen-welcome").style.display = "none";
+  document.getElementById("screen-eval").style.display = "block";
+  openTab("cog");
 }
 
 function openTab(tab){
-document.querySelectorAll('.tab').forEach(t=>t.style.display="none");
-document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove("active"));
-document.querySelector(`[onclick="openTab('${tab}')"]`).classList.add("active");
-renderTab(tab);
+  document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
+  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+  document.getElementById("tab-" + tab).style.display = "block";
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
+
+  renderTab(tab);
 }
 
 // ================== RENDER ==================
 function renderTab(tab){
-const block=data[tab];
-const el=document.getElementById("tab-"+tab);
-el.style.display="block";
-el.innerHTML="<h3>"+(tab==="cog"?"Estilo Cognoscitivo":tab==="locus"?"Locus de Control":"Tolerancia a la Ambigüedad")+"</h3>";
+  const block = data[tab];
+  const el = document.getElementById("tab-" + tab);
 
-block.questions.forEach((q,i)=>{
-el.innerHTML+=`<p>${q[0]||q}</p>`;
-for(let s=1;s<=block.scale;s++){
-el.innerHTML+=`<span class="scale-option" onclick="select('${tab}',${i},${s},this)">${s}</span>`;
-}
-});
-el.innerHTML+=`<button class="btn" onclick="finishTab('${tab}')">Finalizar sección</button><div class="feedback" id="fb-${tab}"></div>`;
+  el.innerHTML = `<h3>${
+    tab === "cog" ? "Estilo Cognoscitivo" :
+    tab === "locus" ? "Locus de Control" :
+    "Tolerancia a la Ambigüedad"
+  }</h3>`;
+
+  block.questions.forEach((q, i) => {
+    const text = Array.isArray(q) ? q[0] : q;
+    el.innerHTML += `<p>${text}</p>`;
+    for(let s = 1; s <= block.scale; s++){
+      el.innerHTML += `<span class="scale-option" onclick="select('${tab}',${i},${s},this)">${s}</span>`;
+    }
+  });
+
+  el.innerHTML += `
+    <br><br>
+    <button class="btn" onclick="finishTab('${tab}')">Finalizar sección</button>
+    <div class="feedback" id="fb-${tab}"></div>
+  `;
 }
 
-function select(tab,i,v,e){
-data[tab].answers[i]=v;
-[...e.parentNode.querySelectorAll('.scale-option')].forEach(o=>o.classList.remove("selected"));
-e.classList.add("selected");
+function select(tab, i, v, el){
+  data[tab].answers[i] = v;
+  el.parentNode.querySelectorAll(".scale-option").forEach(o => o.classList.remove("selected"));
+  el.classList.add("selected");
 }
 
 function finishTab(tab){
-const fb=document.getElementById("fb-"+tab);
-fb.innerHTML="<p><strong>Sección completada.</strong> Reflexiona sobre tus respuestas.</p>";
+  document.getElementById("fb-" + tab).innerHTML =
+    "<p><strong>Sección completada.</strong> Puedes cambiar de pestaña o continuar.</p>";
 }
-
-// ================== CIERRE ==================
 </script>
+
 </body>
 </html>
