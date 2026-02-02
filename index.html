@@ -12,16 +12,25 @@ body{margin:0;font-family:'Lato',sans-serif;background:#f4f6f8;color:#212529}
 header{background:#2c5f8d;color:#fff;padding:2rem 1rem;text-align:center}
 main{max-width:900px;margin:auto;padding:1.5rem}
 footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
+
+.screen{display:none}
+.screen.active{display:block}
+
 .card{background:#fff;border-radius:8px;padding:2rem;margin-bottom:2rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .btn{padding:.8rem 1.2rem;font-size:1rem;cursor:pointer;border:none;border-radius:6px;background:#2c5f8d;color:#fff}
+
 .tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
 .tab-btn{flex:1;padding:.6rem;border:none;border-radius:6px;cursor:pointer;background:#dee2e6}
 .tab-btn.active{background:#2c5f8d;color:#fff}
-.tab{display:none}
+
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
 .scale-option{display:inline-block;padding:.7rem;margin:.3rem;border:1px solid #ccc;border-radius:6px;cursor:pointer;width:42px;text-align:center}
 .scale-option.selected{background:#2c5f8d;color:#fff;border-color:#2c5f8d}
-.feedback h4{margin-top:1.2rem}
-.feedback p{margin:.4rem 0}
+
+.feedback{margin-top:1.5rem;padding:1rem;background:#f1f3f5;border-radius:6px}
+.feedback h4{margin-top:1rem}
 </style>
 </head>
 
@@ -33,125 +42,184 @@ footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 
 <main>
 
-<!-- PANTALLA 1 -->
-<div class="card" id="screen-welcome">
-<h2>Bienvenida</h2>
-<p>Esta autoevaluación te invita a reflexionar sobre cómo piensas, decides y enfrentas la incertidumbre.</p>
-<p>No hay respuestas correctas o incorrectas. Los resultados son solo para tu reflexión personal.</p>
-<button class="btn" onclick="startApp()">Comenzar autoevaluación</button>
-</div>
+<!-- SCREEN 1 -->
+<section id="screen-welcome" class="screen active">
+  <div class="card">
+    <h2>Bienvenida</h2>
+    <p>Esta autoevaluación te invita a reflexionar sobre cómo piensas, decides y enfrentas situaciones inciertas.</p>
+    <button class="btn" onclick="showScreen('screen-eval')">Comenzar</button>
+  </div>
+</section>
 
-<!-- PANTALLA 2 -->
-<div class="card" id="screen-eval" style="display:none">
+<!-- SCREEN 2 -->
+<section id="screen-eval" class="screen">
+  <div class="card">
 
-<div class="tabs">
-  <button class="tab-btn active" data-tab="cog" onclick="openTab('cog')">Estilo Cognoscitivo</button>
-  <button class="tab-btn" data-tab="locus" onclick="openTab('locus')">Locus de Control</button>
-  <button class="tab-btn" data-tab="amb" onclick="openTab('amb')">Tolerancia a la Ambigüedad</button>
-</div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="cog">Estilo Cognoscitivo</button>
+      <button class="tab-btn" data-tab="locus">Locus de Control</button>
+      <button class="tab-btn" data-tab="amb">Tolerancia a la Ambigüedad</button>
+    </div>
 
-<div id="tab-cog" class="tab"></div>
-<div id="tab-locus" class="tab"></div>
-<div id="tab-amb" class="tab"></div>
+    <!-- COG -->
+    <div class="tab-panel active" id="tab-cog"></div>
 
-</div>
+    <!-- LOCUS -->
+    <div class="tab-panel" id="tab-locus"></div>
 
-<!-- PANTALLA 3 -->
-<div class="card" id="screen-end" style="display:none">
-<h2>Autoevaluación finalizada</h2>
-<p>Gracias por completar el ejercicio. Reflexiona sobre cómo estos resultados influyen en tu forma de aprender y actuar.</p>
-</div>
+    <!-- AMB -->
+    <div class="tab-panel" id="tab-amb"></div>
+
+  </div>
+</section>
 
 </main>
 
 <footer>
-App educativa · v2.1 · Febrero 2026
+App educativa · v3.0 · Febrero 2026
 </footer>
 
 <script>
-// ================== DATOS ==================
-const data = {
-  cog: {
-    scale: 5,
-    questions: [
-      ["Valoro la exactitud y los datos antes de decidir.","K"],
-      ["Prefiero trabajar con planes bien definidos.","P"],
-      ["Me gusta cuestionar lo establecido.","C"]
-    ],
-    answers: []
-  },
-  locus: {
-    scale: 1,
-    questions: [
-      "Mis logros dependen principalmente de mi esfuerzo.",
-      "El éxito depende de la suerte.",
-      "Cuando algo sale mal, puedo hacer algo para cambiarlo."
-    ],
-    answers: []
-  },
-  amb: {
-    scale: 7,
-    questions: [
-      "Me siento cómodo cuando no tengo toda la información.",
-      "Prefiero instrucciones claras antes de empezar.",
-      "Puedo decidir aunque no tenga todas las respuestas."
-    ],
-    answers: []
-  }
+// ================= DATOS =================
+const cognoscitivo = {
+  questions: [
+    {t:"Valoro la exactitud y los datos antes de decidir.", k:"K"},
+    {t:"Prefiero trabajar con planes bien definidos.", k:"P"},
+    {t:"Me gusta cuestionar lo establecido.", k:"C"}
+  ],
+  answers:[]
 };
 
-// ================== NAVEGACIÓN ==================
-function startApp(){
-  document.getElementById("screen-welcome").style.display = "none";
-  document.getElementById("screen-eval").style.display = "block";
-  openTab("cog");
+const locus = {
+  questions: [
+    "Mis logros dependen principalmente de mi esfuerzo.",
+    "El éxito depende de la suerte.",
+    "Cuando algo sale mal, puedo hacer algo para cambiarlo."
+  ],
+  answers:[]
+};
+
+const amb = {
+  questions: [
+    "Me siento cómodo cuando no tengo toda la información.",
+    "Prefiero instrucciones claras antes de empezar.",
+    "Puedo decidir aunque no tenga todas las respuestas."
+  ],
+  answers:[]
+};
+
+// ================= SCREENS =================
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
 }
 
-function openTab(tab){
-  document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-  document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+// ================= TABS =================
+const tabBtns=document.querySelectorAll(".tab-btn");
+const panels=document.querySelectorAll(".tab-panel");
 
-  document.getElementById("tab-" + tab).style.display = "block";
-  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
+tabBtns.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    tabBtns.forEach(b=>b.classList.remove("active"));
+    panels.forEach(p=>p.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-"+btn.dataset.tab).classList.add("active");
+  });
+});
 
-  renderTab(tab);
-}
+// ================= RENDER =================
+renderCognoscitivo();
+renderLocus();
+renderAmb();
 
-// ================== RENDER ==================
-function renderTab(tab){
-  const block = data[tab];
-  const el = document.getElementById("tab-" + tab);
+// -------- COG --------
+function renderCognoscitivo(){
+  const el=document.getElementById("tab-cog");
+  el.innerHTML="<h3>Estilo Cognoscitivo</h3>";
 
-  el.innerHTML = `<h3>${
-    tab === "cog" ? "Estilo Cognoscitivo" :
-    tab === "locus" ? "Locus de Control" :
-    "Tolerancia a la Ambigüedad"
-  }</h3>`;
-
-  block.questions.forEach((q, i) => {
-    const text = Array.isArray(q) ? q[0] : q;
-    el.innerHTML += `<p>${text}</p>`;
-    for(let s = 1; s <= block.scale; s++){
-      el.innerHTML += `<span class="scale-option" onclick="select('${tab}',${i},${s},this)">${s}</span>`;
+  cognoscitivo.questions.forEach((q,i)=>{
+    el.innerHTML+=`<p>${q.t}</p>`;
+    for(let s=1;s<=5;s++){
+      el.innerHTML+=`<span class="scale-option" onclick="selectCog(${i},${s},this)">${s}</span>`;
     }
   });
 
-  el.innerHTML += `
-    <br><br>
-    <button class="btn" onclick="finishTab('${tab}')">Finalizar sección</button>
-    <div class="feedback" id="fb-${tab}"></div>
-  `;
+  el.innerHTML+=`<br><button class="btn" onclick="finishCog()">Finalizar sección</button>
+                 <div class="feedback" id="fb-cog"></div>`;
 }
 
-function select(tab, i, v, el){
-  data[tab].answers[i] = v;
-  el.parentNode.querySelectorAll(".scale-option").forEach(o => o.classList.remove("selected"));
+function selectCog(i,v,el){
+  cognoscitivo.answers[i]=v;
+  el.parentNode.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
   el.classList.add("selected");
 }
 
-function finishTab(tab){
-  document.getElementById("fb-" + tab).innerHTML =
-    "<p><strong>Sección completada.</strong> Puedes cambiar de pestaña o continuar.</p>";
+function finishCog(){
+  const sums={K:0,P:0,C:0},counts={K:0,P:0,C:0};
+  cognoscitivo.questions.forEach((q,i)=>{
+    sums[q.k]+=cognoscitivo.answers[i];
+    counts[q.k]++;
+  });
+  const fb=document.getElementById("fb-cog");
+  fb.innerHTML="";
+  Object.keys(sums).forEach(k=>{
+    const avg=(sums[k]/counts[k]).toFixed(2);
+    fb.innerHTML+=`<h4>${k} (${avg})</h4>
+    <p>Esta dimensión refleja un énfasis particular en tu forma de pensar.</p>`;
+  });
+}
+
+// -------- LOCUS --------
+function renderLocus(){
+  const el=document.getElementById("tab-locus");
+  el.innerHTML="<h3>Locus de Control</h3>";
+  locus.questions.forEach((q,i)=>{
+    el.innerHTML+=`<p>${q}</p>
+    <span class="scale-option" onclick="selectLocus(${i},0,this)">0</span>
+    <span class="scale-option" onclick="selectLocus(${i},1,this)">1</span>`;
+  });
+  el.innerHTML+=`<br><button class="btn" onclick="finishLocus()">Finalizar sección</button>
+                 <div class="feedback" id="fb-locus"></div>`;
+}
+
+function selectLocus(i,v,el){
+  locus.answers[i]=v;
+  el.parentNode.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
+  el.classList.add("selected");
+}
+
+function finishLocus(){
+  const total=locus.answers.reduce((a,b)=>a+b,0);
+  const fb=document.getElementById("fb-locus");
+  fb.innerHTML=`<p>Puntaje total: <strong>${total}</strong></p>
+  <p>Este resultado sugiere cómo percibes la influencia de tus acciones y del entorno.</p>`;
+}
+
+// -------- AMB --------
+function renderAmb(){
+  const el=document.getElementById("tab-amb");
+  el.innerHTML="<h3>Tolerancia a la Ambigüedad</h3>";
+  amb.questions.forEach((q,i)=>{
+    el.innerHTML+=`<p>${q}</p>`;
+    for(let s=1;s<=7;s++){
+      el.innerHTML+=`<span class="scale-option" onclick="selectAmb(${i},${s},this)">${s}</span>`;
+    }
+  });
+  el.innerHTML+=`<br><button class="btn" onclick="finishAmb()">Finalizar sección</button>
+                 <div class="feedback" id="fb-amb"></div>`;
+}
+
+function selectAmb(i,v,el){
+  amb.answers[i]=v;
+  el.parentNode.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
+  el.classList.add("selected");
+}
+
+function finishAmb(){
+  const total=amb.answers.reduce((a,b)=>a+b,0);
+  const fb=document.getElementById("fb-amb");
+  fb.innerHTML=`<p>Puntaje total: <strong>${total}</strong></p>
+  <p>Este resultado refleja tu comodidad ante situaciones inciertas.</p>`;
 }
 </script>
 
