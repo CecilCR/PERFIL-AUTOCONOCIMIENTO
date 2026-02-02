@@ -3,63 +3,139 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>App de Autoconocimiento Educativo</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<title>Perfil / Autoconocimiento</title>
 
 <style>
-body{margin:0;font-family:'Lato',sans-serif;background:#f4f6f8;color:#212529}
-header{background:#2c5f8d;color:#fff;padding:2rem 1rem;text-align:center}
-main{max-width:900px;margin:auto;padding:1.5rem}
-footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
+/* =======================
+   ESTILOS GENERALES
+   SUGERENCIA: mover luego a styles.css
+======================= */
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#f4f6f8;
+}
+header{
+  background:#2c5f8d;
+  color:#fff;
+  padding:1.5rem;
+  text-align:center;
+}
+main{
+  max-width:900px;
+  margin:auto;
+  padding:1.5rem;
+}
+.card{
+  background:#fff;
+  padding:2rem;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+button{
+  padding:.8rem 1.2rem;
+  border:none;
+  border-radius:6px;
+  background:#2c5f8d;
+  color:#fff;
+  cursor:pointer;
+}
 
-.screen{display:none}
-.screen.active{display:block}
+/* =======================
+   PANTALLAS
+======================= */
+.screen{ display:none; }
+.screen.active{ display:block; }
 
-.card{background:#fff;border-radius:8px;padding:2rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
+/* =======================
+   TABS
+======================= */
+.tabs{
+  display:flex;
+  gap:.5rem;
+  margin-bottom:1rem;
+}
+.tab-btn{
+  flex:1;
+  padding:.6rem;
+  background:#dee2e6;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+.tab-btn.active{
+  background:#2c5f8d;
+  color:#fff;
+}
+.tab-panel{ display:none; }
+.tab-panel.active{ display:block; }
 
-.btn{padding:.8rem 1.2rem;border:none;border-radius:6px;background:#2c5f8d;color:#fff;cursor:pointer}
-
-.tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
-.tab-btn{flex:1;padding:.6rem;border:none;border-radius:6px;cursor:pointer;background:#dee2e6}
-.tab-btn.active{background:#2c5f8d;color:#fff}
-
-.tab-panel{display:none}
-.tab-panel.active{display:block}
-
-.question{margin-bottom:1rem}
-.scale-option{display:inline-block;padding:.6rem;margin:.2rem;border:1px solid #ccc;border-radius:6px;cursor:pointer;width:42px;text-align:center}
-.scale-option.selected{background:#2c5f8d;color:#fff;border-color:#2c5f8d}
-
-.feedback{margin-top:1.5rem;padding:1rem;background:#f1f3f5;border-radius:6px}
+/* =======================
+   PREGUNTAS
+======================= */
+.question{ margin-bottom:1rem; }
+.option{
+  display:inline-block;
+  margin:.2rem;
+  padding:.5rem;
+  border:1px solid #ccc;
+  border-radius:6px;
+  cursor:pointer;
+  width:40px;
+  text-align:center;
+}
+.option.selected{
+  background:#2c5f8d;
+  color:#fff;
+  border-color:#2c5f8d;
+}
+.feedback{
+  margin-top:1.5rem;
+  padding:1rem;
+  background:#eef2f5;
+  border-radius:6px;
+}
 </style>
 </head>
 
 <body>
+
 <header>
-<h1>App de Autoconocimiento Educativo</h1>
-<p>Ejercicio de reflexión personal · Uso no diagnóstico</p>
+  <h1>Perfil / Autoconocimiento</h1>
 </header>
 
 <main>
 
-<!-- BIENVENIDA -->
+<!-- =======================
+     BIENVENIDA
+     MEJORA: texto pedagógico claro
+======================= -->
 <section id="screen-welcome" class="screen active">
   <div class="card">
-    <h2>Bienvenida</h2>
-    <p>Reflexiona sobre tu forma de pensar y decidir.</p>
-    <button class="btn" onclick="showScreen('screen-eval');openTab('cog')">Comenzar</button>
+    <p>
+      Este reporte analiza tres dimensiones que definen cómo interactúas con el mundo:
+    </p>
+    <ul>
+      <li><strong>Locus de Control</strong>: tu sentido de responsabilidad.</li>
+      <li><strong>Tolerancia a la Ambigüedad</strong>: tu manejo de la incertidumbre.</li>
+      <li><strong>Estilo Cognoscitivo</strong>: tu forma de procesar información.</li>
+    </ul>
+    <p>No existen perfiles buenos o malos. El objetivo es la reflexión personal.</p>
+    <button onclick="startEvaluation()">Comenzar autoevaluación</button>
   </div>
 </section>
 
-<!-- EVALUACIÓN -->
+<!-- =======================
+     EVALUACIÓN
+======================= -->
 <section id="screen-eval" class="screen">
   <div class="card">
 
     <div class="tabs">
-      <button class="tab-btn active" data-tab="cog" onclick="openTab('cog')">Estilo Cognoscitivo</button>
-      <button class="tab-btn" data-tab="locus" onclick="openTab('locus')">Locus de Control</button>
-      <button class="tab-btn" data-tab="amb" onclick="openTab('amb')">Tolerancia a la Ambigüedad</button>
+      <button class="tab-btn active" data-tab="cog">Estilo Cognoscitivo</button>
+      <button class="tab-btn" data-tab="locus">Locus de Control</button>
+      <button class="tab-btn" data-tab="amb">Tolerancia a la Ambigüedad</button>
     </div>
 
     <div id="tab-cog" class="tab-panel active"></div>
@@ -71,100 +147,110 @@ footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 
 </main>
 
-<footer>v3.1</footer>
-
 <script>
-// ---------- DATOS ----------
-const cogQ=[
-  {t:"Valoro la exactitud y los datos antes de decidir.",k:"K"},
-  {t:"Prefiero trabajar con planes bien definidos.",k:"P"},
-  {t:"Me gusta cuestionar lo establecido.",k:"C"}
-];
-const locusQ=[
-  "Mis logros dependen de mi esfuerzo.",
-  "El éxito depende de la suerte.",
-  "Puedo influir en lo que ocurre."
-];
-const ambQ=[
-  "Me siento cómodo con la incertidumbre.",
-  "Prefiero instrucciones claras.",
-  "Puedo decidir con información incompleta."
-];
+/* =======================
+   DATOS
+   MEJORA: luego cargar desde JSON
+======================= */
+const questions = {
+  cog: [
+    "Valoro la exactitud y los datos antes de decidir.",
+    "Prefiero trabajar con planes bien definidos.",
+    "Me gusta cuestionar lo establecido."
+  ],
+  locus: [
+    "Mis logros dependen de mi esfuerzo.",
+    "El éxito depende de la suerte.",
+    "Puedo influir en lo que ocurre."
+  ],
+  amb: [
+    "Me siento cómodo con la incertidumbre.",
+    "Prefiero instrucciones claras.",
+    "Puedo decidir con información incompleta."
+  ]
+};
 
-const answers={cog:[],locus:[],amb:[]};
+const answers = { cog:[], locus:[], amb:[] };
 
-// ---------- SCREENS ----------
+/* =======================
+   NAVEGACIÓN
+======================= */
+function startEvaluation(){
+  showScreen("screen-eval");
+  openTab("cog");
+}
+
 function showScreen(id){
   document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
   document.getElementById(id).classList.add("active");
 }
 
-// ---------- TABS ----------
+/* =======================
+   TABS
+======================= */
+document.querySelectorAll(".tab-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    openTab(btn.dataset.tab);
+  });
+});
+
 function openTab(tab){
-  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-  document.getElementById("tab-"+tab).classList.add("active");
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+
   document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
+  document.getElementById("tab-"+tab).classList.add("active");
 
-  if(tab==="cog") renderCog();
-  if(tab==="locus") renderLocus();
-  if(tab==="amb") renderAmb();
+  renderQuestions(tab);
 }
 
-// ---------- RENDER ----------
-function renderCog(){
-  const el=document.getElementById("tab-cog");
-  el.innerHTML="<h3>Estilo Cognoscitivo</h3>";
-  cogQ.forEach((q,i)=>{
-    el.innerHTML+=`<div class="question"><p>${q.t}</p>`;
-    for(let s=1;s<=5;s++){
-      el.innerHTML+=`<span class="scale-option" onclick="select('cog',${i},${s},this)">${s}</span>`;
-    }
-    el.innerHTML+="</div>";
+/* =======================
+   RENDER DE PREGUNTAS
+   MEJORA: validación por sección
+======================= */
+function renderQuestions(type){
+  const panel=document.getElementById("tab-"+type);
+  panel.innerHTML="";
+
+  questions[type].forEach((q,i)=>{
+    const div=document.createElement("div");
+    div.className="question";
+    div.innerHTML=`<p>${q}</p>`;
+
+    const scale = type==="locus" ? [0,1] : type==="amb" ? [1,2,3,4,5,6,7] : [1,2,3,4,5];
+
+    scale.forEach(v=>{
+      const opt=document.createElement("span");
+      opt.className="option";
+      opt.textContent=v;
+      opt.onclick=()=>{
+        answers[type][i]=v;
+        div.querySelectorAll(".option").forEach(o=>o.classList.remove("selected"));
+        opt.classList.add("selected");
+      };
+      div.appendChild(opt);
+    });
+
+    panel.appendChild(div);
   });
-  el.innerHTML+=`<button class="btn" onclick="finishCog()">Finalizar</button><div class="feedback" id="fb-cog"></div>`;
+
+  panel.innerHTML+=`<button onclick="finishSection('${type}')">Finalizar sección</button>
+                   <div class="feedback" id="fb-${type}"></div>`;
 }
 
-function renderLocus(){
-  const el=document.getElementById("tab-locus");
-  el.innerHTML="<h3>Locus de Control</h3>";
-  locusQ.forEach((q,i)=>{
-    el.innerHTML+=`<div class="question"><p>${q}</p>
-    <span class="scale-option" onclick="select('locus',${i},0,this)">0</span>
-    <span class="scale-option" onclick="select('locus',${i},1,this)">1</span></div>`;
-  });
-  el.innerHTML+=`<button class="btn" onclick="finishLocus()">Finalizar</button><div class="feedback" id="fb-locus"></div>`;
+/* =======================
+   FEEDBACK BÁSICO
+   MEJORA: aquí va tu TEXTO PEDAGÓGICO COMPLETO
+======================= */
+function finishSection(type){
+  if(answers[type].length < questions[type].length){
+    alert("Responde todas las preguntas");
+    return;
+  }
+  document.getElementById("fb-"+type).innerHTML =
+    "<strong>Sección completada.</strong> Reflexiona sobre tus respuestas.";
 }
+</script>
 
-function renderAmb(){
-  const el=document.getElementById("tab-amb");
-  el.innerHTML="<h3>Tolerancia a la Ambigüedad</h3>";
-  ambQ.forEach((q,i)=>{
-    el.innerHTML+=`<div class="question"><p>${q}</p>`;
-    for(let s=1;s<=7;s++){
-      el.innerHTML+=`<span class="scale-option" onclick="select('amb',${i},${s},this)">${s}</span>`;
-    }
-    el.innerHTML+="</div>";
-  });
-  el.innerHTML+=`<button class="btn" onclick="finishAmb()">Finalizar</button><div class="feedback" id="fb-amb"></div>`;
-}
-
-// ---------- SELECT ----------
-function select(type,i,v,el){
-  answers[type][i]=v;
-  el.parentNode.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
-  el.classList.add("selected");
-}
-
-// ---------- FEEDBACK ----------
-function finishCog(){
-  if(answers.cog.length<3) return alert("Responde todas las preguntas");
-  document.getElementById("fb-cog").innerHTML="<p>Se ha identificado tu perfil cognoscitivo.</p>";
-}
-function finishLocus(){
-  if(answers.locus.length<3) return alert("Responde todas las preguntas");
-  document.getElementById("fb-locus").innerHTML="<p>Se ha identificado tu orientación de control.</p>";
-}
-function finishAmb(){
-  if(answers.amb.length<3) return alert("Responde todas las preguntas");
-  doc
+</body>
+</html>
