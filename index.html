@@ -1,4 +1,8 @@
 <script>
+document.addEventListener("DOMContentLoaded", function(){
+
+/* ==== TODO TU CÓDIGO JS VA AQUÍ DENTRO ==== */
+
 /* =========================
    DATOS
 ========================= */
@@ -35,13 +39,13 @@ const rendered = { cog:false, locus:false, amb:false };
 /* =========================
    NAVEGACIÓN
 ========================= */
-function startEvaluation(){
+window.startEvaluation = function(){
   document.getElementById("screen-welcome").classList.remove("active");
   document.getElementById("screen-eval").classList.add("active");
   openTab("cog");
-}
+};
 
-function openTab(tab){
+window.openTab = function(tab){
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
 
@@ -52,10 +56,10 @@ function openTab(tab){
     renderSection(tab);
     rendered[tab] = true;
   }
-}
+};
 
 /* =========================
-   RENDER CORRECTO
+   RENDER
 ========================= */
 function renderSection(type){
   const panel = document.getElementById("tab-"+type);
@@ -112,4 +116,6 @@ function finishSection(type){
   document.getElementById("fb-"+type).innerHTML =
     "<strong>Sección completada correctamente.</strong>";
 }
+
+}); // 👈 CIERRE DOMContentLoaded
 </script>
