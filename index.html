@@ -7,14 +7,15 @@
 <title>Perfil / Autoconocimiento</title>
 
 <style>
-/* =======================
+/* ===============================
    ESTILOS GENERALES
-   SUGERENCIA: mover luego a styles.css
-======================= */
+   (Puedes personalizar colores)
+================================ */
 body{
   margin:0;
   font-family: Arial, sans-serif;
   background:#f4f6f8;
+  color:#212529;
 }
 header{
   background:#2c5f8d;
@@ -40,21 +41,27 @@ button{
   background:#2c5f8d;
   color:#fff;
   cursor:pointer;
+  margin-top:1rem;
+}
+button:disabled{
+  opacity:.6;
+  cursor:not-allowed;
 }
 
-/* =======================
+/* ===============================
    PANTALLAS
-======================= */
+================================ */
 .screen{ display:none; }
 .screen.active{ display:block; }
 
-/* =======================
+/* ===============================
    TABS
-======================= */
+================================ */
 .tabs{
   display:flex;
   gap:.5rem;
   margin-bottom:1rem;
+  flex-wrap:wrap;
 }
 .tab-btn{
   flex:1;
@@ -71,9 +78,9 @@ button{
 .tab-panel{ display:none; }
 .tab-panel.active{ display:block; }
 
-/* =======================
+/* ===============================
    PREGUNTAS
-======================= */
+================================ */
 .question{ margin-bottom:1rem; }
 .option{
   display:inline-block;
@@ -96,6 +103,7 @@ button{
   background:#eef2f5;
   border-radius:6px;
 }
+hr{ margin:1.5rem 0; }
 </style>
 </head>
 
@@ -107,28 +115,56 @@ button{
 
 <main>
 
-<!-- =======================
+<!-- ===============================
      BIENVENIDA
-     MEJORA: texto pedagógico claro
-======================= -->
+================================ -->
 <section id="screen-welcome" class="screen active">
   <div class="card">
+    <h2>Bienvenido al Ejercicio de Autoconocimiento</h2>
+
     <p>
-      Este reporte analiza tres dimensiones que definen cómo interactúas con el mundo:
+      Este instrumento está basado en la propuesta de
+      <strong>Whetten & Cameron</strong> y tiene como objetivo ayudarte
+      a reflexionar sobre cómo piensas, decides y enfrentas distintas situaciones.
     </p>
+
+    <h3>🧠 Estilo Cognoscitivo</h3>
+    <p>
+      Se refiere a tu inclinación para percibir, interpretar y responder a la información.
+      No es un rasgo fijo de personalidad, sino una tendencia de aprendizaje.
+    </p>
+
     <ul>
-      <li><strong>Locus de Control</strong>: tu sentido de responsabilidad.</li>
-      <li><strong>Tolerancia a la Ambigüedad</strong>: tu manejo de la incertidumbre.</li>
-      <li><strong>Estilo Cognoscitivo</strong>: tu forma de procesar información.</li>
+      <li><strong>Conocimiento</strong>: lógica, datos y análisis.</li>
+      <li><strong>Planeación</strong>: estructura y método.</li>
+      <li><strong>Creativo</strong>: innovación y pensamiento no convencional.</li>
     </ul>
-    <p>No existen perfiles buenos o malos. El objetivo es la reflexión personal.</p>
+
+    <h3>🎯 Locus de Control</h3>
+    <p>
+      Describe si percibes que los resultados dependen de tus acciones
+      (locus interno) o de fuerzas externas como la suerte (locus externo).
+    </p>
+
+    <h3>🌊 Tolerancia a la Ambigüedad</h3>
+    <p>
+      Evalúa tu comodidad ante la incertidumbre, la complejidad y los cambios imprevistos.
+    </p>
+
+    <h3>✅ Instrucciones</h3>
+    <ul>
+      <li>Responde con honestidad.</li>
+      <li>No hay respuestas correctas o incorrectas.</li>
+      <li>Al finalizar recibirás retroalimentación informativa.</li>
+    </ul>
+
     <button onclick="startEvaluation()">Comenzar autoevaluación</button>
   </div>
 </section>
 
-<!-- =======================
+<!-- ===============================
      EVALUACIÓN
-======================= -->
+================================ -->
 <section id="screen-eval" class="screen">
   <div class="card">
 
@@ -148,33 +184,41 @@ button{
 </main>
 
 <script>
-/* =======================
-   DATOS
-   MEJORA: luego cargar desde JSON
-======================= */
-const questions = {
-  cog: [
-    "Valoro la exactitud y los datos antes de decidir.",
-    "Prefiero trabajar con planes bien definidos.",
-    "Me gusta cuestionar lo establecido."
-  ],
-  locus: [
-    "Mis logros dependen de mi esfuerzo.",
-    "El éxito depende de la suerte.",
-    "Puedo influir en lo que ocurre."
-  ],
-  amb: [
-    "Me siento cómodo con la incertidumbre.",
-    "Prefiero instrucciones claras.",
-    "Puedo decidir con información incompleta."
-  ]
+/* =========================================================
+   DATOS (NO BORRAR)
+========================================================= */
+const DATA = {
+  cog: {
+    scale:[1,2,3,4,5],
+    questions:[
+      {t:"Valoro la exactitud y los datos antes de decidir.",k:"K"},
+      {t:"Prefiero trabajar con planes bien definidos.",k:"P"},
+      {t:"Me gusta cuestionar lo establecido.",k:"C"}
+    ]
+  },
+  locus:{
+    scale:[0,1],
+    questions:[
+      "Mis logros dependen de mi esfuerzo.",
+      "El éxito depende de la suerte.",
+      "Puedo influir en lo que ocurre."
+    ]
+  },
+  amb:{
+    scale:[1,2,3,4,5,6,7],
+    questions:[
+      "Me siento cómodo con la incertidumbre.",
+      "Prefiero instrucciones claras.",
+      "Puedo decidir con información incompleta."
+    ]
+  }
 };
 
-const answers = { cog:[], locus:[], amb:[] };
+const answers={ cog:[], locus:[], amb:[] };
 
-/* =======================
+/* =========================================================
    NAVEGACIÓN
-======================= */
+========================================================= */
 function startEvaluation(){
   showScreen("screen-eval");
   openTab("cog");
@@ -185,41 +229,34 @@ function showScreen(id){
   document.getElementById(id).classList.add("active");
 }
 
-/* =======================
+/* =========================================================
    TABS
-======================= */
+========================================================= */
 document.querySelectorAll(".tab-btn").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    openTab(btn.dataset.tab);
-  });
+  btn.addEventListener("click",()=>openTab(btn.dataset.tab));
 });
 
 function openTab(tab){
   document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
   document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-
   document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
   document.getElementById("tab-"+tab).classList.add("active");
-
-  renderQuestions(tab);
+  renderSection(tab);
 }
 
-/* =======================
-   RENDER DE PREGUNTAS
-   MEJORA: validación por sección
-======================= */
-function renderQuestions(type){
+/* =========================================================
+   RENDER SECCIONES
+========================================================= */
+function renderSection(type){
   const panel=document.getElementById("tab-"+type);
-  panel.innerHTML="";
+  panel.innerHTML=`<h3>${panelTitle(type)}</h3>`;
 
-  questions[type].forEach((q,i)=>{
+  DATA[type].questions.forEach((q,i)=>{
+    const text=typeof q==="string"?q:q.t;
     const div=document.createElement("div");
     div.className="question";
-    div.innerHTML=`<p>${q}</p>`;
-
-    const scale = type==="locus" ? [0,1] : type==="amb" ? [1,2,3,4,5,6,7] : [1,2,3,4,5];
-
-    scale.forEach(v=>{
+    div.innerHTML=`<p>${text}</p>`;
+    DATA[type].scale.forEach(v=>{
       const opt=document.createElement("span");
       opt.className="option";
       opt.textContent=v;
@@ -230,25 +267,32 @@ function renderQuestions(type){
       };
       div.appendChild(opt);
     });
-
     panel.appendChild(div);
   });
 
-  panel.innerHTML+=`<button onclick="finishSection('${type}')">Finalizar sección</button>
-                   <div class="feedback" id="fb-${type}"></div>`;
+  panel.innerHTML+=`
+    <button onclick="finishSection('${type}')">Finalizar sección</button>
+    <div class="feedback" id="fb-${type}"></div>
+  `;
 }
 
-/* =======================
-   FEEDBACK BÁSICO
-   MEJORA: aquí va tu TEXTO PEDAGÓGICO COMPLETO
-======================= */
+/* =========================================================
+   FEEDBACK (BASE)
+   SUGERENCIA: aquí se puede ampliar más
+========================================================= */
 function finishSection(type){
-  if(answers[type].length < questions[type].length){
-    alert("Responde todas las preguntas");
+  if(answers[type].length < DATA[type].questions.length){
+    alert("Responde todas las preguntas de esta sección.");
     return;
   }
-  document.getElementById("fb-"+type).innerHTML =
-    "<strong>Sección completada.</strong> Reflexiona sobre tus respuestas.";
+  document.getElementById("fb-"+type).innerHTML=
+    "<strong>Sección completada.</strong> Revisa tu retroalimentación.";
+}
+
+function panelTitle(type){
+  return type==="cog"?"Estilo Cognoscitivo":
+         type==="locus"?"Locus de Control":
+         "Tolerancia a la Ambigüedad";
 }
 </script>
 
