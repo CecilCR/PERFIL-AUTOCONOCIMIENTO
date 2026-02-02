@@ -14,9 +14,12 @@ main{max-width:900px;margin:auto;padding:1.5rem}
 footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 .card{background:#fff;border-radius:8px;padding:2rem;margin-bottom:2rem;box-shadow:0 2px 6px rgba(0,0,0,.08)}
 .btn{padding:.8rem 1.2rem;font-size:1rem;cursor:pointer;border:none;border-radius:6px;background:#2c5f8d;color:#fff}
-.scale-option{display:inline-block;padding:.8rem;margin:.3rem;border:1px solid #ccc;border-radius:6px;cursor:pointer;width:42px;text-align:center}
+.tabs{display:flex;gap:.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.tab-btn{flex:1;padding:.6rem;border:none;border-radius:6px;cursor:pointer;background:#dee2e6}
+.tab-btn.active{background:#2c5f8d;color:#fff}
+.tab{display:none}
+.scale-option{display:inline-block;padding:.7rem;margin:.3rem;border:1px solid #ccc;border-radius:6px;cursor:pointer;width:42px;text-align:center}
 .scale-option.selected{background:#2c5f8d;color:#fff;border-color:#2c5f8d}
-.progress{margin-bottom:1rem;font-size:.9rem;opacity:.8}
 .feedback h4{margin-top:1.2rem}
 .feedback p{margin:.4rem 0}
 </style>
@@ -30,125 +33,118 @@ footer{text-align:center;font-size:.8rem;opacity:.7;padding:1rem}
 
 <main>
 
-<div class="card" id="intro">
-<h2>Ejercicio de Autoconocimiento</h2>
-<p>Responderás tres bloques breves. No hay respuestas correctas o incorrectas.</p>
-<button class="btn" onclick="start()">Iniciar</button>
+<!-- PANTALLA 1 -->
+<div class="card" id="screen-welcome">
+<h2>Bienvenida</h2>
+<p>Esta autoevaluación te invita a reflexionar sobre la forma en que piensas, tomas decisiones y enfrentas situaciones inciertas.</p>
+<p>No hay respuestas correctas o incorrectas. Los resultados son solo para tu reflexión personal.</p>
+<button class="btn" onclick="startApp()">Comenzar autoevaluación</button>
 </div>
 
-<div class="card" id="question" style="display:none">
-<div class="progress" id="progress"></div>
-<p id="questionText"></p>
-<div id="options"></div>
-<button class="btn" onclick="next()">Siguiente</button>
+<!-- PANTALLA 2 -->
+<div class="card" id="screen-eval" style="display:none">
+<div class="tabs">
+<button class="tab-btn active" onclick="openTab('cog')">Estilo Cognoscitivo</button>
+<button class="tab-btn" onclick="openTab('locus')">Locus de Control</button>
+<button class="tab-btn" onclick="openTab('amb')">Tolerancia a la Ambigüedad</button>
 </div>
 
-<div class="card" id="results" style="display:none">
-<h3>Retroalimentación personal</h3>
-<div id="feedback" class="feedback"></div>
+<div id="tab-cog" class="tab"></div>
+<div id="tab-locus" class="tab"></div>
+<div id="tab-amb" class="tab"></div>
+</div>
+
+<!-- PANTALLA 3 -->
+<div class="card" id="screen-end" style="display:none">
+<h2>Autoevaluación finalizada</h2>
+<p>Gracias por completar el ejercicio. Te invitamos a reflexionar sobre tus resultados y considerar cómo estas dimensiones influyen en tu forma de aprender y actuar.</p>
 </div>
 
 </main>
 
 <footer>
-App educativa · v1.5 · Febrero 2026
+App educativa · v2.0 · Febrero 2026
 </footer>
 
 <script>
-// ========================
-// BLOQUES
-// ========================
-const blocks = [
-  { name:"Estilo Cognoscitivo", scale:5, questions:[
-    {t:"Una persona experta que no puede dar una respuesta clara probablemente no sabe mucho.",k:"P"},
-    {t:"Me gustaría vivir en un país extranjero por un tiempo.",k:"C"},
-    {t:"Las personas que insisten en respuestas absolutas no consideran la complejidad del mundo.",k:"P"},
-    {t:"Una buena obra de arte tiene significado en cada detalle.",k:"C"},
-    {t:"Prefiero eventos cuidadosamente planificados.",k:"K"},
-    {t:"Las tareas vagas fomentan la iniciativa.",k:"P"},
-    {t:"Una vida con pocas sorpresas es preferible.",k:"C"},
-    {t:"Muchos problemas se resuelven mejor sin intervenir demasiado.",k:"K"},
-    {t:"Necesitamos menos leyes y regulaciones.",k:"P"},
-    {t:"Las reglas frustran porque limitan la libertad.",k:"C"},
-    {t:"Es más interesante un problema complejo que uno simple.",k:"K"},
-    {t:"Las cosas rara vez son tan simples como parecen.",k:"P"},
-    {t:"Una buena docente invita a cuestionar.",k:"C"},
-    {t:"Prefiero grupos diversos a homogéneos.",k:"K"},
-    {t:"Las instrucciones muy específicas limitan la iniciativa.",k:"P"},
-    {t:"Cuantas más reglas hay, más difícil avanzar.",k:"C"}
-  ]},
-  { name:"Locus de Control", scale:1, questions:[
-    "Mis logros dependen principalmente de mi esfuerzo.",
-    "El éxito depende mucho de la suerte.",
-    "Cuando algo sale mal, puedo hacer algo para cambiarlo.",
-    "Muchas decisiones importantes dependen de otros.",
-    "Si trabajo duro, puedo influir en los resultados.",
-    "El contexto suele determinar lo que ocurre."
-  ]},
-  { name:"Tolerancia a la Ambigüedad", scale:7, questions:[
-    "Me siento cómodo cuando no tengo toda la información.",
-    "Prefiero instrucciones claras antes de empezar.",
-    "Disfruto enfrentar situaciones nuevas.",
-    "La incertidumbre me genera tensión.",
-    "Puedo decidir aunque no tenga todas las respuestas.",
-    "Los problemas sin solución clara me incomodan."
-  ]}
-];
+// ================== DATOS ==================
+const data = {
+  cog: {
+    scale:5,
+    questions:[
+      ["Valoro la exactitud y los datos antes de decidir.","K"],
+      ["Prefiero trabajar con planes bien definidos.","P"],
+      ["Me gusta cuestionar lo establecido.","C"]
+    ],
+    answers:[],
+    feedback:{
+      K:{t:"Estilo de Conocimiento",d:"Énfasis en lógica y datos.",v:"Decisiones basadas en evidencias.",r:"Evita la parálisis por análisis."},
+      P:{t:"Estilo de Planeación",d:"Énfasis en estructura y método.",v:"Orden y previsibilidad.",r:"Practica flexibilidad planificada."},
+      C:{t:"Estilo Creativo",d:"Énfasis en innovación.",v:"Generación de ideas.",r:"Refuerza la ejecución."}
+    }
+  },
+  locus:{
+    scale:1,
+    questions:[
+      "Mis logros dependen de mi esfuerzo.",
+      "El éxito depende de la suerte.",
+      "Puedo influir en lo que ocurre."
+    ],
+    answers:[]
+  },
+  amb:{
+    scale:7,
+    questions:[
+      "Me siento cómodo con la incertidumbre.",
+      "Prefiero instrucciones claras.",
+      "Puedo decidir con información incompleta."
+    ],
+    answers:[]
+  }
+};
 
-let b=0,q=0,answers=[];
-
-// ========================
-function start(){
-intro.style.display="none";
-question.style.display="block";
-show();
+// ================== NAVEGACIÓN ==================
+function startApp(){
+screen-welcome.style.display="none";
+screen-eval.style.display="block";
+openTab('cog');
 }
 
-function show(){
-const block=blocks[b];
-progress.textContent=`${block.name} · Pregunta ${q+1} de ${block.questions.length}`;
-questionText.textContent=block.questions[q].t || block.questions[q];
-options.innerHTML="";
-for(let i=1;i<=block.scale;i++){
-const d=document.createElement("div");
-d.className="scale-option";
-d.textContent=i;
-d.onclick=()=>select(i,d);
-options.appendChild(d);
-}
+function openTab(tab){
+document.querySelectorAll('.tab').forEach(t=>t.style.display="none");
+document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove("active"));
+document.querySelector(`[onclick="openTab('${tab}')"]`).classList.add("active");
+renderTab(tab);
 }
 
-function select(v,e){
-answers.push({b,q,v});
-document.querySelectorAll(".scale-option").forEach(o=>o.classList.remove("selected"));
+// ================== RENDER ==================
+function renderTab(tab){
+const block=data[tab];
+const el=document.getElementById("tab-"+tab);
+el.style.display="block";
+el.innerHTML="<h3>"+(tab==="cog"?"Estilo Cognoscitivo":tab==="locus"?"Locus de Control":"Tolerancia a la Ambigüedad")+"</h3>";
+
+block.questions.forEach((q,i)=>{
+el.innerHTML+=`<p>${q[0]||q}</p>`;
+for(let s=1;s<=block.scale;s++){
+el.innerHTML+=`<span class="scale-option" onclick="select('${tab}',${i},${s},this)">${s}</span>`;
+}
+});
+el.innerHTML+=`<button class="btn" onclick="finishTab('${tab}')">Finalizar sección</button><div class="feedback" id="fb-${tab}"></div>`;
+}
+
+function select(tab,i,v,e){
+data[tab].answers[i]=v;
+[...e.parentNode.querySelectorAll('.scale-option')].forEach(o=>o.classList.remove("selected"));
 e.classList.add("selected");
 }
 
-function next(){
-if(answers.length===0||answers[answers.length-1].q!==q){alert("Selecciona una opción");return;}
-q++;
-if(q<blocks[b].questions.length){show();}
-else{b++;q=0;if(b<blocks.length)show();else results();}
+function finishTab(tab){
+const fb=document.getElementById("fb-"+tab);
+fb.innerHTML="<p><strong>Sección completada.</strong> Reflexiona sobre tus respuestas.</p>";
 }
 
-// ========================
-function results(){
-question.style.display="none";
-results.style.display="block";
-feedback.innerHTML=`
-<h4>Estilo Cognoscitivo</h4>
-<p><strong>Descripción:</strong> Tus resultados reflejan distintas formas de procesar información.</p>
-<p><strong>Clave pedagógica:</strong> No hay un estilo mejor; todos aportan valor.</p>
-
-<h4>Locus de Control</h4>
-<p><strong>Ventaja:</strong> El equilibrio entre responsabilidad personal y contexto favorece la resiliencia.</p>
-<p><strong>Recomendación:</strong> Identifica qué sí puedes controlar en cada situación.</p>
-
-<h4>Tolerancia a la Ambigüedad</h4>
-<p><strong>Ventaja:</strong> La capacidad de actuar con información incompleta es clave en entornos complejos.</p>
-<p><strong>Recomendación:</strong> Practica la toma de decisiones gradual en contextos inciertos.</p>
-`;
-}
+// ================== CIERRE ==================
 </script>
 </body>
 </html>
