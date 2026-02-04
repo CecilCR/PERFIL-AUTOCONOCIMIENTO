@@ -1,120 +1,257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil / Autoconocimiento</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f6f8;
+}
+header{
+  background:#2c5f8d;
+  color:#fff;
+  padding:1.5rem;
+  text-align:center;
+}
+main{
+  max-width:900px;
+  margin:auto;
+  padding:1.5rem;
+}
+.card{
+  background:#fff;
+  padding:2rem;
+  border-radius:8px;
+  box-shadow:0 2px 6px rgba(0,0,0,.1);
+}
+button{
+  padding:.8rem 1.2rem;
+  border:none;
+  border-radius:6px;
+  background:#2c5f8d;
+  color:#fff;
+  cursor:pointer;
+  margin-top:1rem;
+}
+.screen{display:none;}
+.screen.active{display:block;}
+
+.tabs{
+  display:flex;
+  gap:.5rem;
+  margin-bottom:1rem;
+  flex-wrap:wrap;
+}
+.tab-btn{
+  flex:1;
+  padding:.6rem;
+  background:#dee2e6;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+.tab-btn.active{
+  background:#2c5f8d;
+  color:#fff;
+}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+.question{margin-bottom:1rem;}
+.option{
+  display:inline-block;
+  margin:.25rem;
+  padding:.5rem;
+  border:1px solid #ccc;
+  border-radius:6px;
+  width:40px;
+  text-align:center;
+  cursor:pointer;
+}
+.option.selected{
+  background:#2c5f8d;
+  color:#fff;
+  border-color:#2c5f8d;
+}
+.feedback{
+  margin-top:1.5rem;
+  padding:1rem;
+  background:#eef2f5;
+  border-radius:6px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Perfil / Autoconocimiento</h1>
+</header>
+
+<main>
+
+<!-- BIENVENIDA -->
+<section id="screen-welcome" class="screen active">
+  <div class="card">
+    <h2>Bienvenido al Ejercicio de Autoconocimiento</h2>
+    <p>
+      Este instrumento está basado en la propuesta de <strong>Whetten & Cameron</strong>.
+      Su objetivo es ayudarte a reflexionar sobre cómo piensas, decides y enfrentas
+      distintas situaciones.
+    </p>
+    <p>No hay respuestas correctas o incorrectas.</p>
+    <button id="startBtn">Comenzar autoevaluación</button>
+  </div>
+</section>
+
+<!-- EVALUACIÓN -->
+<section id="screen-eval" class="screen">
+  <div class="card">
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="cog">Estilo Cognoscitivo</button>
+      <button class="tab-btn" data-tab="locus">Locus de Control</button>
+      <button class="tab-btn" data-tab="amb">Tolerancia a la Ambigüedad</button>
+    </div>
+
+    <div id="tab-cog" class="tab-panel active"></div>
+    <div id="tab-locus" class="tab-panel"></div>
+    <div id="tab-amb" class="tab-panel"></div>
+
+  </div>
+</section>
+
+</main>
+
 <script>
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", () => {
 
-/* =========================
-   DATOS
-========================= */
-const DATA = {
-  cog:{
-    scale:[1,2,3,4,5],
-    questions:[
-      "Valoro la exactitud y los datos antes de decidir.",
-      "Prefiero trabajar con planes bien definidos.",
-      "Me gusta cuestionar lo establecido."
-    ]
-  },
-  locus:{
-    scale:[0,1],
-    questions:[
-      "Mis logros dependen de mi esfuerzo.",
-      "El éxito depende de la suerte.",
-      "Puedo influir en lo que ocurre."
-    ]
-  },
-  amb:{
-    scale:[1,2,3,4,5,6,7],
-    questions:[
-      "Me siento cómodo con la incertidumbre.",
-      "Prefiero instrucciones claras.",
-      "Puedo decidir con información incompleta."
-    ]
-  }
-};
+  /* =====================
+     DATOS
+  ===================== */
+  const DATA = {
+    cog:{
+      scale:[1,2,3,4,5],
+      questions:[
+        "Valoro la exactitud y los datos antes de decidir.",
+        "Prefiero trabajar con planes bien definidos.",
+        "Me gusta cuestionar lo establecido."
+      ]
+    },
+    locus:{
+      scale:[0,1],
+      questions:[
+        "Mis logros dependen de mi esfuerzo.",
+        "El éxito depende de la suerte.",
+        "Puedo influir en lo que ocurre."
+      ]
+    },
+    amb:{
+      scale:[1,2,3,4,5,6,7],
+      questions:[
+        "Me siento cómodo con la incertidumbre.",
+        "Prefiero instrucciones claras.",
+        "Puedo decidir con información incompleta."
+      ]
+    }
+  };
 
-const answers = { cog:[], locus:[], amb:[] };
-const rendered = { cog:false, locus:false, amb:false };
+  const answers = { cog:[], locus:[], amb:[] };
+  const rendered = { cog:false, locus:false, amb:false };
 
-/* =========================
-   NAVEGACIÓN
-========================= */
-window.startEvaluation = function(){
-  document.getElementById("screen-welcome").classList.remove("active");
-  document.getElementById("screen-eval").classList.add("active");
-  openTab("cog");
-};
+  /* =====================
+     NAVEGACIÓN
+  ===================== */
+  const welcome = document.getElementById("screen-welcome");
+  const evalScreen = document.getElementById("screen-eval");
 
-window.openTab = function(tab){
-  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-
-  document.getElementById("tab-"+tab).classList.add("active");
-  document.querySelector(`button[data-tab="${tab}"]`)?.classList.add("active");
-
-  if(!rendered[tab]){
-    renderSection(tab);
-    rendered[tab] = true;
-  }
-};
-
-/* =========================
-   RENDER
-========================= */
-function renderSection(type){
-  const panel = document.getElementById("tab-"+type);
-  panel.innerHTML = "";
-
-  DATA[type].questions.forEach((text, index)=>{
-    const qDiv = document.createElement("div");
-    qDiv.className = "question";
-
-    const p = document.createElement("p");
-    p.textContent = text;
-    qDiv.appendChild(p);
-
-    const optionsDiv = document.createElement("div");
-
-    DATA[type].scale.forEach(value=>{
-      const opt = document.createElement("span");
-      opt.className = "option";
-      opt.textContent = value;
-
-      opt.addEventListener("click", ()=>{
-        answers[type][index] = value;
-        optionsDiv.querySelectorAll(".option")
-          .forEach(o=>o.classList.remove("selected"));
-        opt.classList.add("selected");
-      });
-
-      optionsDiv.appendChild(opt);
-    });
-
-    qDiv.appendChild(optionsDiv);
-    panel.appendChild(qDiv);
+  document.getElementById("startBtn").addEventListener("click", () => {
+    welcome.classList.remove("active");
+    evalScreen.classList.add("active");
+    openTab("cog");
   });
 
-  const btn = document.createElement("button");
-  btn.textContent = "Finalizar sección";
-  btn.onclick = ()=>finishSection(type);
-  panel.appendChild(btn);
+  document.querySelectorAll(".tab-btn").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      openTab(btn.dataset.tab);
+    });
+  });
 
-  const fb = document.createElement("div");
-  fb.className = "feedback";
-  fb.id = "fb-" + type;
-  panel.appendChild(fb);
-}
+  function openTab(tab){
+    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
 
-/* =========================
-   FINALIZAR
-========================= */
-function finishSection(type){
-  if(answers[type].length < DATA[type].questions.length){
-    alert("Responde todas las preguntas antes de continuar.");
-    return;
+    document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
+    document.getElementById("tab-"+tab).classList.add("active");
+
+    if(!rendered[tab]){
+      renderSection(tab);
+      rendered[tab] = true;
+    }
   }
-  document.getElementById("fb-"+type).innerHTML =
-    "<strong>Sección completada correctamente.</strong>";
-}
 
-}); // 👈 CIERRE CORRECTO
+  /* =====================
+     RENDER
+  ===================== */
+  function renderSection(type){
+    const panel = document.getElementById("tab-"+type);
+    panel.innerHTML = "";
+
+    DATA[type].questions.forEach((text, i)=>{
+      const qDiv = document.createElement("div");
+      qDiv.className = "question";
+
+      const p = document.createElement("p");
+      p.textContent = text;
+      qDiv.appendChild(p);
+
+      const opts = document.createElement("div");
+
+      DATA[type].scale.forEach(val=>{
+        const o = document.createElement("span");
+        o.className = "option";
+        o.textContent = val;
+        o.addEventListener("click", ()=>{
+          answers[type][i] = val;
+          opts.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
+          o.classList.add("selected");
+        });
+        opts.appendChild(o);
+      });
+
+      qDiv.appendChild(opts);
+      panel.appendChild(qDiv);
+    });
+
+    const btn = document.createElement("button");
+    btn.textContent = "Finalizar sección";
+    btn.addEventListener("click", ()=>finishSection(type));
+    panel.appendChild(btn);
+
+    const fb = document.createElement("div");
+    fb.className = "feedback";
+    fb.id = "fb-"+type;
+    panel.appendChild(fb);
+  }
+
+  /* =====================
+     FINALIZAR
+  ===================== */
+  function finishSection(type){
+    if(answers[type].length < DATA[type].questions.length){
+      alert("Responde todas las preguntas antes de continuar.");
+      return;
+    }
+    document.getElementById("fb-"+type).innerHTML =
+      "<strong>Sección completada.</strong> Puedes continuar con otra pestaña.";
+  }
+
+});
 </script>
 
+</body>
+</html>
