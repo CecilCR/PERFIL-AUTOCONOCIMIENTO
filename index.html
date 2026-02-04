@@ -134,34 +134,54 @@ document.addEventListener("DOMContentLoaded", () => {
      DATOS
   ===================== */
   const DATA = {
-    cog:{
-      scale:[1,2,3,4,5],
-      questions:[
-        "Valoro la exactitud y los datos antes de decidir.",
-        "Prefiero trabajar con planes bien definidos.",
-        "Me gusta cuestionar lo establecido."
-      ]
-    },
-    locus:{
-      scale:[0,1],
-      questions:[
-        "Mis logros dependen de mi esfuerzo.",
-        "El éxito depende de la suerte.",
-        "Puedo influir en lo que ocurre."
-      ]
-    },
-    amb:{
-      scale:[1,2,3,4,5,6,7],
-      questions:[
-        "Me siento cómodo con la incertidumbre.",
-        "Prefiero instrucciones claras.",
-        "Puedo decidir con información incompleta."
-      ]
-    }
-  };
+  cog: {
+    scale: [1,2,3,4,5],
+    questions: [
+      // Planeación
+      "Para mí es muy importante la elaboración de un plan claro.",
+      "Siempre me gusta saber qué se debe hacer y cuándo.",
+      "Me gustan los planes de acción detallados.",
+      "Prefiero contar con una estructura clara para hacer mi trabajo.",
+      "Prefiero las reuniones bien planeadas y con una agenda clara.",
+      "Tomo decisiones definitivas y hago seguimientos meticulosos.",
+      "Una buena tarea es una tarea bien preparada.",
 
-  const answers = { cog:[], locus:[], amb:[] };
-  const rendered = { cog:false, locus:false, amb:false };
+      // Creativo
+      "Me gusta contribuir a soluciones innovadoras.",
+      "Prefiero buscar soluciones creativas.",
+      "Me siento motivado por la innovación continua.",
+      "Me gusta tener una gran variedad en mi vida.",
+      "Me atraen más las ideas nuevas que las soluciones ya existentes.",
+      "Me gusta extender los límites.",
+      "Trato de evitar la rutina.",
+
+      // Conocimiento
+      "Me gusta entender plenamente un problema.",
+      "Me gusta analizar los problemas.",
+      "Realizo análisis detallados.",
+      "Estudio cada problema hasta entender la lógica subyacente."
+    ]
+  },
+
+  locus: {
+    scale: [0,1],
+    questions: [
+      "Mis logros dependen de mi esfuerzo.",
+      "El éxito depende de la suerte.",
+      "Puedo influir en lo que ocurre."
+    ]
+  },
+
+  amb: {
+    scale: [1,2,3,4,5,6,7],
+    questions: [
+      "Me siento cómodo con la incertidumbre.",
+      "Prefiero instrucciones claras.",
+      "Puedo decidir con información incompleta."
+    ]
+  }
+};
+
 
   /* =====================
      NAVEGACIÓN
