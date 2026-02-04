@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Perfil / Autoconocimiento</title>
-
-<!-- Evita warning de favicon -->
 <link rel="icon" href="data:,">
 
 <style>
@@ -64,9 +62,12 @@ button{
 .tab-panel{display:none;}
 .tab-panel.active{display:block;}
 
-.question{
-  margin-bottom:1.2rem;
+.section-title{
+  margin-top:1.5rem;
+  font-weight:bold;
+  color:#2c5f8d;
 }
+.question{margin-bottom:1rem;}
 .option{
   display:inline-block;
   margin:.25rem;
@@ -88,18 +89,13 @@ button{
   background:#eef2f5;
   border-radius:6px;
 }
-.section-title{
-  margin-top:1.5rem;
-  font-weight:bold;
-  color:#2c5f8d;
-}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>Perfil / Autoconocimiento</h1>
+<h1>Perfil / Autoconocimiento</h1>
 </header>
 
 <main>
@@ -109,12 +105,11 @@ button{
   <div class="card">
     <h2>Bienvenido al Ejercicio de Autoconocimiento</h2>
     <p>
-      Este instrumento está basado en la propuesta de <strong>Whetten & Cameron</strong>.
-      Su objetivo es ayudarte a reflexionar sobre cómo piensas, decides y enfrentas
-      distintas situaciones.
+      Este instrumento, basado en Whetten & Cameron, te ayudará a reflexionar
+      sobre cómo procesas información, asumes responsabilidad y enfrentas la incertidumbre.
     </p>
     <p>No hay respuestas correctas o incorrectas.</p>
-    <button id="startBtn">Comenzar autoevaluación</button>
+    <button id="startBtn">Comenzar</button>
   </div>
 </section>
 
@@ -138,178 +133,183 @@ button{
 </main>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", ()=>{
 
-  /* =====================
-     DATOS
-  ===================== */
-  const DATA = {
-    cog: {
-      scale: [1,2,3,4,5],
-      sections: [
-        {
-          title: "Estilo de Planeación",
-          questions: [
-            "Para mí es muy importante la elaboración de un plan claro.",
-            "Siempre me gusta saber qué se debe hacer y cuándo.",
-            "Me gustan los planes de acción detallados.",
-            "Prefiero contar con una estructura clara para hacer mi trabajo.",
-            "Prefiero las reuniones bien planeadas y con una agenda clara.",
-            "Tomo decisiones definitivas y hago seguimientos meticulosos.",
-            "Una buena tarea es una tarea bien preparada."
-          ]
-        },
-        {
-          title: "Estilo Creativo",
-          questions: [
-            "Me gusta contribuir a soluciones innovadoras.",
-            "Prefiero buscar soluciones creativas.",
-            "Me siento motivado por la innovación continua.",
-            "Me gusta tener una gran variedad en mi vida.",
-            "Me atraen más las ideas nuevas que las soluciones ya existentes.",
-            "Me gusta extender los límites.",
-            "Trato de evitar la rutina."
-          ]
-        },
-        {
-          title: "Estilo de Conocimiento",
-          questions: [
-            "Me gusta entender plenamente un problema.",
-            "Me gusta analizar los problemas.",
-            "Realizo análisis detallados.",
-            "Estudio cada problema hasta entender la lógica subyacente."
-          ]
-        }
-      ]
-    },
-    locus:{
-      scale:[0,1],
-      questions:[
-        "Mis logros dependen de mi esfuerzo.",
-        "El éxito depende de la suerte.",
-        "Puedo influir en lo que ocurre."
-      ]
-    },
-    amb:{
-      scale:[1,2,3,4,5,6,7],
-      questions:[
-        "Me siento cómodo con la incertidumbre.",
-        "Prefiero instrucciones claras.",
-        "Puedo decidir con información incompleta."
-      ]
-    }
-  };
+/* =====================
+   DATOS
+===================== */
+const DATA = {
+  cog:{
+    scale:[1,2,3,4,5],
+    sections:[
+      {
+        title:"Estilo de Planeación",
+        questions:[
+          "Para mí es muy importante la elaboración de un plan claro.",
+          "Siempre me gusta saber qué se debe hacer y cuándo.",
+          "Me gustan los planes de acción detallados.",
+          "Prefiero contar con una estructura clara para hacer mi trabajo.",
+          "Prefiero las reuniones bien planeadas y con una agenda clara.",
+          "Tomo decisiones definitivas y hago seguimientos meticulosos.",
+          "Una buena tarea es una tarea bien preparada."
+        ]
+      },
+      {
+        title:"Estilo Creativo",
+        questions:[
+          "Me gusta contribuir a soluciones innovadoras.",
+          "Prefiero buscar soluciones creativas.",
+          "Me siento motivado por la innovación continua.",
+          "Me gusta tener una gran variedad en mi vida.",
+          "Me atraen más las ideas nuevas que las soluciones ya existentes.",
+          "Me gusta extender los límites.",
+          "Trato de evitar la rutina."
+        ]
+      },
+      {
+        title:"Estilo de Conocimiento",
+        questions:[
+          "Me gusta entender plenamente un problema.",
+          "Me gusta analizar los problemas.",
+          "Realizo análisis detallados.",
+          "Estudio cada problema hasta entender la lógica subyacente."
+        ]
+      }
+    ]
+  },
 
-  const answers = { cog:[], locus:[], amb:[] };
+  locus:{
+    scale:[0,1],
+    questions:[
+      "Mis logros dependen de mi esfuerzo.",
+      "El éxito depende de la suerte.",
+      "Puedo influir en lo que ocurre.",
+      "Lo que me pasa está determinado por factores externos.",
+      "Mis decisiones influyen directamente en mis resultados."
+    ]
+  },
 
-  /* =====================
-     NAVEGACIÓN
-  ===================== */
-  const welcome = document.getElementById("screen-welcome");
-  const evalScreen = document.getElementById("screen-eval");
+  amb:{
+    scale:[1,2,3,4,5,6,7],
+    questions:[
+      "Me siento cómodo con la incertidumbre.",
+      "Prefiero instrucciones claras.",
+      "Me adapto bien a situaciones nuevas.",
+      "Me incomodan los cambios inesperados."
+    ]
+  }
+};
 
-  document.getElementById("startBtn").addEventListener("click", () => {
-    welcome.classList.remove("active");
-    evalScreen.classList.add("active");
-    openTab("cog");
+const answers = { cog:[], locus:[], amb:[] };
+
+/* =====================
+   NAVEGACIÓN
+===================== */
+document.getElementById("startBtn").onclick = ()=>{
+  document.getElementById("screen-welcome").classList.remove("active");
+  document.getElementById("screen-eval").classList.add("active");
+  openTab("cog");
+};
+
+document.querySelectorAll(".tab-btn").forEach(b=>{
+  b.onclick = ()=>openTab(b.dataset.tab);
+});
+
+function openTab(tab){
+  document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
+  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+  document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
+  document.getElementById("tab-"+tab).classList.add("active");
+  renderSection(tab);
+}
+
+/* =====================
+   RENDER
+===================== */
+function renderSection(type){
+  const panel = document.getElementById("tab-"+type);
+  panel.innerHTML = "";
+
+  if(type==="cog"){
+    let i=0;
+    DATA.cog.sections.forEach(sec=>{
+      panel.innerHTML += `<div class="section-title">${sec.title}</div>`;
+      sec.questions.forEach(q=>{
+        renderQuestion(panel,type,i,q,DATA.cog.scale);
+        i++;
+      });
+    });
+  } else {
+    DATA[type].questions.forEach((q,i)=>{
+      renderQuestion(panel,type,i,q,DATA[type].scale);
+    });
+  }
+
+  panel.innerHTML += `<button onclick="finishSection('${type}')">Finalizar sección</button>
+                      <div class="feedback" id="fb-${type}"></div>`;
+}
+
+function renderQuestion(panel,type,i,text,scale){
+  const div=document.createElement("div");
+  div.className="question";
+  div.innerHTML=`<p>${text}</p>`;
+  const opts=document.createElement("div");
+
+  scale.forEach(v=>{
+    const o=document.createElement("span");
+    o.className="option";
+    o.textContent=v;
+    o.onclick=()=>{
+      answers[type][i]=v;
+      opts.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
+      o.classList.add("selected");
+    };
+    opts.appendChild(o);
   });
 
-  document.querySelectorAll(".tab-btn").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      openTab(btn.dataset.tab);
-    });
-  });
+  div.appendChild(opts);
+  panel.appendChild(div);
+}
 
-  function openTab(tab){
-    document.querySelectorAll(".tab-btn").forEach(b=>b.classList.remove("active"));
-    document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
+/* =====================
+   RESULTADOS
+===================== */
+window.finishSection = function(type){
 
-    document.querySelector(`.tab-btn[data-tab="${tab}"]`).classList.add("active");
-    document.getElementById("tab-"+tab).classList.add("active");
-
-    renderSection(tab);
-  }
-
-  /* =====================
-     RENDER
-  ===================== */
-  function renderSection(type){
-    const panel = document.getElementById("tab-"+type);
-    panel.innerHTML = "";
-
-    if(type === "cog"){
-      let qIndex = 0;
-      DATA.cog.sections.forEach(section=>{
-        const h = document.createElement("div");
-        h.className = "section-title";
-        h.textContent = section.title;
-        panel.appendChild(h);
-
-        section.questions.forEach(text=>{
-          renderQuestion(panel, type, qIndex, text, DATA.cog.scale);
-          qIndex++;
-        });
-      });
-    } else {
-      DATA[type].questions.forEach((text, i)=>{
-        renderQuestion(panel, type, i, text, DATA[type].scale);
-      });
-    }
-
-    const btn = document.createElement("button");
-    btn.textContent = "Finalizar sección";
-    btn.addEventListener("click", ()=>finishSection(type));
-    panel.appendChild(btn);
-
-    const fb = document.createElement("div");
-    fb.className = "feedback";
-    fb.id = "fb-"+type;
-    panel.appendChild(fb);
-  }
-
-  function renderQuestion(panel, type, index, text, scale){
-    const qDiv = document.createElement("div");
-    qDiv.className = "question";
-
-    const p = document.createElement("p");
-    p.textContent = text;
-    qDiv.appendChild(p);
-
-    const opts = document.createElement("div");
-
-    scale.forEach(val=>{
-      const o = document.createElement("span");
-      o.className = "option";
-      o.textContent = val;
-      o.addEventListener("click", ()=>{
-        answers[type][index] = val;
-        opts.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));
-        o.classList.add("selected");
-      });
-      opts.appendChild(o);
+  if(type==="cog"){
+    const counts=[7,7,4];
+    let idx=0, res=[];
+    counts.forEach(c=>{
+      let s=0;
+      for(let i=0;i<c;i++){ s+=answers.cog[idx++]||0; }
+      res.push((s/c).toFixed(2));
     });
 
-    qDiv.appendChild(opts);
-    panel.appendChild(qDiv);
+    document.getElementById("fb-cog").innerHTML=`
+      <h3>Resultados – Estilo Cognoscitivo</h3>
+      <p><strong>Planeación:</strong> ${res[0]}</p>
+      <p><strong>Creativo:</strong> ${res[1]}</p>
+      <p><strong>Conocimiento:</strong> ${res[2]}</p>
+      <p><em>No existe un estilo mejor que otro.</em></p>`;
   }
 
-  /* =====================
-     FINALIZAR
-  ===================== */
-  function finishSection(type){
-    const totalQuestions =
-      type === "cog"
-        ? DATA.cog.sections.reduce((s,x)=>s+x.questions.length,0)
-        : DATA[type].questions.length;
+  if(type==="locus"){
+    const sum=answers.locus.reduce((a,b)=>a+(b||0),0);
+    let perfil = sum<=6 ? "Orientación Interna"
+               : sum<=11 ? "Orientación Equilibrada"
+               : "Orientación Externa";
 
-    if(answers[type].length < totalQuestions){
-      alert("Responde todas las preguntas antes de continuar.");
-      return;
-    }
-
-    document.getElementById("fb-"+type).innerHTML =
-      "<strong>Sección completada correctamente.</strong>";
+    document.getElementById("fb-locus").innerHTML=`
+      <h3>Locus de Control</h3>
+      <p>Puntaje total: ${sum}</p>
+      <p><strong>${perfil}</strong></p>`;
   }
+
+  if(type==="amb"){
+    document.getElementById("fb-amb").innerHTML=
+      "<strong>Sección completada.</strong>";
+  }
+};
 
 });
 </script>
