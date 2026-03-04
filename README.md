@@ -37,7 +37,7 @@ open perfil-autoconocimiento-completo.html
 ```
 
 ### Opción 2: GitHub Pages
-El sistema está disponible en: `https://tu-usuario.github.io/autoconocimiento-evaluacion/`
+El sistema está disponible en: `https://cecilcr.github.io/PERFIL-AUTOCONOCIMIENTO/`
 
 ## 📋 Estructura de las Evaluaciones
 
