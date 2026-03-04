@@ -1,125 +1,167 @@
-# App de Autoconocimiento para Estudiantes
+# 📊 Sistema de Evaluación de Autoconocimiento
 
-Aplicación web educativa para la reflexión individual de estudiantes sobre
-distintos aspectos de su perfil cognitivo y de aprendizaje.
+Sistema interactivo de evaluación psicométrica para el desarrollo de competencias de autoconocimiento en contextos organizacionales. Basado en los instrumentos de **Whetten & Cameron**.
 
-La app está diseñada para **uso en aula**, con **respuestas anónimas** y
-visualización de **tendencias grupales** para el docente, sin recopilar datos personales.
+[![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/HTML)
+[![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+[![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/CSS)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
----
+## 🎯 Descripción
 
-## 🎯 Propósito educativo
+Herramienta web autocontenida que evalúa tres dimensiones fundamentales del autoconocimiento profesional:
 
-- Favorecer el **autoconocimiento** del estudiante
-- Promover la **reflexión metacognitiva**
-- Ofrecer al docente una **lectura global del grupo**
-- Apoyar la **planeación didáctica**, no la evaluación individual
+- **Estilo Cognoscitivo**: Cómo procesas información (Planeación, Creatividad, Conocimiento)
+- **Locus de Control**: Percepción sobre el control de tu destino (Interno, Equilibrado, Externo)
+- **Tolerancia a la Ambigüedad**: Capacidad para manejar incertidumbre (Novedad, Complejidad, Insolubilidad)
 
-⚠️ Esta aplicación **no es un instrumento clínico ni diagnóstico**.
+## ✨ Características
 
----
+- ✅ **Sin dependencias externas** - Funciona completamente offline
+- ✅ **Responsive** - Compatible con desktop, tablet y móvil
+- ✅ **Validación robusta** - Detecta respuestas incompletas y patrones inconsistentes
+- ✅ **Feedback personalizado** - Retroalimentación específica según resultados
+- ✅ **Interfaz intuitiva** - Barras de progreso y navegación clara
+- ✅ **Cálculos verificados** - Algoritmos validados con casos de prueba exhaustivos
+- ✅ **Listo para imprimir** - Resultados exportables en PDF
 
-## 🧠 Instrumentos incluidos
+## 🚀 Uso
 
-1. **Estilo Cognoscitivo**
-   - Dimensiones independientes:
-     - Conocimiento
-     - Planeación
-     - Creatividad
-   - Escala Likert (1–5)
+### Opción 1: Uso directo
+```bash
+# Clonar el repositorio
+git clone https://github.com/tu-usuario/autoconocimiento-evaluacion.git
 
-2. **Locus de Control**
-   - Adaptación educativa del modelo de Rotter
-   - Clasificación grupal: interno / equilibrado / externo
+# Abrir en navegador
+open perfil-autoconocimiento-completo.html
+```
 
-3. **Tolerancia a la Ambigüedad**
-   - Dimensiones:
-     - Novedad
-     - Complejidad
-     - Insolubilidad
-   - Escala Likert (1–7, con ítems invertidos)
+### Opción 2: GitHub Pages
+El sistema está disponible en: `https://tu-usuario.github.io/autoconocimiento-evaluacion/`
 
----
+## 📋 Estructura de las Evaluaciones
 
-## 🔐 Control de acceso por sesión (orden en aula)
+### 1. Estilo Cognoscitivo (18 preguntas)
+- **Escala:** 1 (Totalmente en desacuerdo) - 5 (Totalmente de acuerdo)
+- **Dimensiones:**
+  - Planeación (7 preguntas)
+  - Creativo (7 preguntas)
+  - Conocimiento (4 preguntas)
+- **Interpretación:** Promedios independientes por dimensión
 
-- Acceso mediante **clave temporal para alumnos**
-- La clave:
-  - Es válida solo durante la sesión
-  - Caduca automáticamente tras 70 minutos
-  - No permite acceso posterior aunque se comparta el enlace
-- El docente puede:
-  - Generar la clave
-  - Regenerarla sin recargar
-  - Cerrar la sesión manualmente
+### 2. Locus de Control (29 preguntas)
+- **Formato:** Opción A o B (24 preguntas válidas, 5 neutrales)
+- **Orientaciones:**
+  - Interna (0-10 puntos): Perfil Protagonista
+  - Equilibrada (11-13 puntos): Perfil Realista
+  - Externa (14-24 puntos): Perfil Análisis Sistémico
+- **Cálculo:** Conteo de respuestas externas
 
----
+### 3. Tolerancia a la Ambigüedad (16 preguntas)
+- **Escala:** 1 (Totalmente en desacuerdo) - 7 (Totalmente de acuerdo)
+- **Subescalas:**
+  - Novedad (4 preguntas)
+  - Complejidad (9 preguntas)
+  - Insolubilidad (3 preguntas)
+- **Procesamiento:** Inversión automática de reactivos pares
+- **Interpretación:**
+  - Alta Tolerancia (1.0-4.0)
+  - Moderada (4.1-5.0)
+  - Baja Tolerancia (5.1-7.0)
 
-## 📊 Tendencias grupales (modo docente)
+## 🔍 Validación Técnica
 
-- Promedios por dimensión
-- Distribuciones porcentuales
-- Visualización con barras y colores por nivel
-- Interpretación pedagógica automática
-- **Nunca se muestran resultados individuales**
+El sistema incluye:
 
----
+- ✅ Validación de completitud de respuestas
+- ✅ Detección de patrones inconsistentes (respuestas automáticas)
+- ✅ Scroll automático a preguntas sin responder
+- ✅ Persistencia visual de respuestas al cambiar tabs
+- ✅ Cálculos matemáticos verificados con tests unitarios
 
-## 📄 Reporte automático
+Ver documentación completa en [`VALIDACION_TECNICA.md`](VALIDACION_TECNICA.md)
 
-Al cerrar la sesión:
-- Se genera automáticamente un **PDF**
-- Incluye:
-  - Tendencias del grupo
-  - Interpretación pedagógica
-  - Fecha y hora
-- No contiene información personal
+## 📊 Casos de Uso
 
----
+### Académico
+- Cursos de desarrollo organizacional
+- Programas de liderazgo
+- Talleres de autoconocimiento
+- Investigación en psicología organizacional
 
-## 🧑‍🎓 Privacidad y ética
+### Empresarial
+- Procesos de selección
+- Programas de desarrollo de talento
+- Coaching ejecutivo
+- Team building
 
-- No se solicitan nombres ni identificadores
-- No se almacenan respuestas individuales
-- Los datos se usan únicamente con fines educativos
-- El alumno ve solo su reflexión personal
-- El docente observa únicamente tendencias agregadas
+### Personal
+- Autodiagnóstico de competencias
+- Desarrollo profesional
+- Preparación para entrevistas
 
----
+## 🎓 Fundamento Teórico
 
-## 🛠️ Tecnología
+Basado en:
+- **Whetten, D. A., & Cameron, K. S.** (2016). *Developing Management Skills* (9th ed.)
+- Escalas psicométricas validadas en contextos organizacionales
+- Framework de competencias directivas
 
-- HTML5, CSS y JavaScript (Vanilla)
-- Sin backend
-- Sin base de datos
-- Compatible con GitHub Pages
-- Funciona offline una vez cargada
+## 🛠️ Tecnologías
 
----
+- **HTML5** - Estructura semántica
+- **CSS3** - Diseño responsive y animaciones
+- **JavaScript (Vanilla)** - Lógica de negocio sin frameworks
+- **LocalStorage** - Persistencia opcional de datos
 
-## 🚀 Uso recomendado en clase
+## 📖 Documentación
 
-1. El docente abre la app
-2. Genera la clave de sesión para alumnos
-3. Los estudiantes ingresan durante la clase
-4. Realizan el ejercicio de forma individual
-5. Al finalizar, el docente cierra la sesión
-6. Se descarga automáticamente el reporte en PDF
+- [`VALIDACION_TECNICA.md`](VALIDACION_TECNICA.md) - Especificaciones técnicas y casos de prueba
+- Comentarios inline en el código fuente
+- Fórmulas de cálculo documentadas
 
----
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor:
+
+1. Fork el proyecto
+2. Crea una rama para tu feature (`git checkout -b feature/NuevaCaracteristica`)
+3. Commit tus cambios (`git commit -m 'Añadir nueva característica'`)
+4. Push a la rama (`git push origin feature/NuevaCaracteristica`)
+5. Abre un Pull Request
+
+## 📝 Changelog
+
+### v1.0.0 (2026-02-05)
+- ✅ Implementación completa de las tres evaluaciones
+- ✅ Validación exhaustiva de cálculos
+- ✅ Detección de patrones inconsistentes
+- ✅ Interfaz responsive
+- ✅ Feedback personalizado por nivel
+- ✅ Textos pedagógicamente optimizados
 
 ## ⚖️ Licencia
 
-Este proyecto se distribuye bajo licencia **MIT**.
-Puede ser usado, adaptado y compartido con fines educativos,
-respetando la autoría original.
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para más detalles.
+
+## 👨‍🏫 Autor
+
+Desarrollado para el curso **"Gestión de las relaciones en las organizaciones"**
+
+## 🙏 Agradecimientos
+
+- Whetten & Cameron por los instrumentos originales
+- Comunidad académica de psicología organizacional
+- Estudiantes que participaron en las pruebas piloto
 
 ---
 
-## 📌 Nota final
+## 📞 Contacto
 
-Esta aplicación está pensada como una **herramienta pedagógica**,
-no como un sistema de evaluación ni de control psicológico.
+Para preguntas, sugerencias o reportar bugs:
+- 📧 Email: tu-email@universidad.edu
+- 🐛 Issues: [GitHub Issues](https://github.com/tu-usuario/autoconocimiento-evaluacion/issues)
 
-Su valor reside en la **reflexión**, el **diálogo educativo**
-y la **toma de decisiones didácticas informadas**.
+---
+
+**⭐ Si este proyecto te fue útil, considera darle una estrella en GitHub**
